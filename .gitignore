@@ -1,0 +1,35 @@
+# Credenciais e configuracoes privadas
+.env
+.env.*
+*.env
+*.pem
+*.key
+
+# Backups e arquivos temporarios
+*.bak
+*.backup
+*.log
+__pycache__/
+*.pyc
+
+# Arquivos locais
+.vscode/
+.idea/
+
+.env-container-backup
+
+/config-api-megavig360-20261111.json
+
+# Credenciais e configuracoes privadas
+.env
+.env.*
+*.pem
+*.key
+*.pfx
+*.p12
+*credentials*
+*secrets*
+
+# Arquivos temporarios
+__pycache__/
+*.pyc

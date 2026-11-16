@@ -1,0 +1,88 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trocar senha - Intranet</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#102c54,#1763a0);font-family:Arial,sans-serif}
+.card{background:white;padding:35px;border-radius:14px;width:90%;max-width:420px;box-shadow:0 12px 35px #0003}
+.logo{display:block;width:180px;max-width:100%;max-height:100px;object-fit:contain;margin:0 auto 20px}
+h2{color:#173c69;text-align:center}
+p{color:#555;font-size:14px;text-align:center}
+label{display:block;margin-top:18px;font-weight:bold;font-size:14px}
+input{width:100%;padding:12px;margin-top:6px;border:1px solid #ccc;border-radius:7px;font-size:15px}
+button{width:100%;padding:13px;margin-top:25px;background:#1763a0;color:white;border:0;border-radius:7px;font-size:16px;cursor:pointer}
+button:hover{background:#104d80}
+#mensagem{text-align:center;margin-top:15px;font-size:14px}
+</style>
+</head>
+<body>
+<div class="card">
+<img src="/api/empresa/logo-publico" class="logo" alt="Logotipo da empresa" onerror="this.style.display='none'">
+<h2>Alteração obrigatória de senha</h2>
+<p>Por segurança, você precisa cadastrar uma nova senha antes de acessar a intranet.</p>
+
+<form id="formSenha">
+<label>Senha atual</label>
+<input id="atual" type="password" required autocomplete="current-password">
+
+<label>Nova senha</label>
+<input id="nova" type="password" minlength="6" required autocomplete="new-password">
+
+<label>Confirmar nova senha</label>
+<input id="confirmar" type="password" minlength="6" required autocomplete="new-password">
+
+<button type="submit">Salvar nova senha</button>
+</form>
+<div id="mensagem"></div>
+</div>
+
+<script>
+const token=sessionStorage.getItem('intranet_token');
+if(!token)location.replace('/login.html');
+
+document.getElementById('formSenha').addEventListener('submit',async e=>{
+ e.preventDefault();
+ const mensagem=document.getElementById('mensagem');
+ const atual=document.getElementById('atual').value;
+ const nova=document.getElementById('nova').value;
+ const confirmar=document.getElementById('confirmar').value;
+
+ if(nova!==confirmar){
+  mensagem.textContent='As novas senhas não coincidem.';
+  return;
+ }
+
+ try{
+  const resposta=await fetch('/api/trocar-senha',{
+   method:'POST',
+   headers:{
+    'Content-Type':'application/json',
+    'Authorization':'Bearer '+token
+   },
+   body:JSON.stringify({senha_atual:atual,nova_senha:nova})
+  });
+
+  const dados=await resposta.json();
+
+  if(!resposta.ok){
+   mensagem.textContent=dados.detail||'Erro ao alterar senha.';
+   return;
+  }
+
+  sessionStorage.removeItem('intranet_token');
+  sessionStorage.removeItem('intranet_usuario');
+  mensagem.style.color='green';
+  mensagem.textContent='Senha alterada! Redirecionando para o login...';
+  setTimeout(()=>location.replace('/login.html'),1800);
+
+ }catch(erro){
+  mensagem.textContent='Erro de comunicação com o servidor.';
+ }
+});
+</script>
+</body>
+</html>
+

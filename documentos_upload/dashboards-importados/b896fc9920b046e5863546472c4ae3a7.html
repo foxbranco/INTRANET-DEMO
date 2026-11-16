@@ -1,0 +1,389 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard de Auditoria | Intranet V12</title>
+<style>
+:root {
+  --bg:#f3f6fb; --card:#fff; --navy:#172b4d;
+  --blue:#2563eb; --muted:#64748b; --border:#e2e8f0;
+}
+* {box-sizing:border-box}
+body {margin:0;font-family:Arial,sans-serif;background:var(--bg);color:#1e293b}
+header {background:var(--navy);color:white;padding:22px 5%;display:flex;justify-content:space-between;align-items:center;gap:15px}
+header h1 {margin:0;font-size:23px}
+header small {color:#cbd5e1}
+main {max-width:1450px;margin:auto;padding:28px}
+.subtitle {color:var(--muted);margin:8px 0 24px}
+.filters {display:flex;flex-wrap:wrap;gap:12px;margin-bottom:24px}
+.filters input,.filters select,.filters button {
+  padding:11px;border:1px solid var(--border);border-radius:8px;
+  background:white;font-size:14px
+}
+.filters button {background:var(--blue);color:white;cursor:pointer}
+.cards {display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:15px}
+.card,.panel {background:var(--card);border:1px solid var(--border);border-radius:13px;padding:22px}
+.card .label {font-size:13px;color:var(--muted)}
+.card .value {font-size:31px;font-weight:bold;margin-top:12px;color:var(--navy)}
+.charts {display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:22px}
+.panel h2 {font-size:17px;margin:0 0 20px}
+.placeholder {min-height:220px;display:flex;align-items:center;justify-content:center;
+  text-align:center;color:var(--muted);border:1px dashed var(--border);
+  border-radius:9px;padding:20px}
+.table-panel {margin-top:22px;overflow-x:auto}
+table {width:100%;border-collapse:collapse;font-size:13px}
+th,td {padding:13px;text-align:left;border-bottom:1px solid var(--border)}
+th {color:var(--muted);background:#f8fafc}
+#status {font-size:13px;color:#cbd5e1}
+@media(max-width:950px){.cards{grid-template-columns:repeat(2,1fr)}.charts{grid-template-columns:1fr}}
+@media(max-width:550px){main{padding:15px}.cards{grid-template-columns:1fr}header{flex-direction:column;align-items:start}}
+</style>
+<style id="dashboard-cabecalho-compacto">
+header {
+    padding: 12px 24px !important;
+    min-height: auto !important;
+}
+header h1 {
+    font-size: 22px !important;
+    line-height: 1.2 !important;
+    margin: 0 0 4px !important;
+}
+header p {
+    font-size: 13px !important;
+    margin: 0 !important;
+}
+main {
+    padding-top: 12px !important;
+}
+</style>
+<style id="dashboard-filtros-compactos">
+
+/* Remover a descricao redundante abaixo do cabecalho */
+main > p:first-child {
+    display: none !important;
+}
+
+/* Reduzir os espacos verticais */
+main {
+    padding-top: 8px !important;
+}
+
+/* Compactar os campos de filtros */
+input[type="date"],
+select,
+button {
+    font-size: 13px !important;
+    padding: 7px 10px !important;
+    min-height: 34px !important;
+}
+
+/* Reduzir o tamanho do botao Atualizar */
+button {
+    width: auto !important;
+    line-height: 1.2 !important;
+}
+
+</style>
+
+<style id="formato-unico-v12">
+html body header {
+    box-sizing: border-box !important;
+    width: 100% !important;
+    height: 86px !important;
+    min-height: 86px !important;
+    max-height: 86px !important;
+    padding: 12px 24px !important;
+    margin: 0 0 10px !important;
+    background: #192e51 !important;
+    border: 0 !important;
+    border-radius: 10px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 20px !important;
+}
+
+html body header h1 {
+    font-size: 23px !important;
+    line-height: 1.2 !important;
+    margin: 0 0 4px !important;
+    color: white !important;
+}
+
+html body header p {
+    font-size: 13px !important;
+    margin: 0 !important;
+    color: #e1e9f1 !important;
+}
+
+html body header > div:first-child {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    justify-content: center !important;
+    gap: 0 !important;
+}
+
+@media (max-width:700px) {
+    html body header {
+        height: auto !important;
+        min-height: 86px !important;
+        max-height: none !important;
+        padding: 12px !important;
+        flex-wrap: wrap !important;
+    }
+}
+</style>
+
+<style id="alinhamento-final-v12">
+html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+body {
+    padding: 12px 14px !important;
+}
+
+body > main,
+body > .container,
+body > .wrap,
+body > .conteudo {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+}
+
+html body header {
+    position: relative !important;
+    width: 100% !important;
+    height: 86px !important;
+    min-height: 86px !important;
+    max-height: 86px !important;
+    margin: 0 0 12px !important;
+    padding: 12px 24px !important;
+    box-sizing: border-box !important;
+    border: 0 !important;
+    border-radius: 10px !important;
+    background: #192e51 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 20px !important;
+}
+
+@media(max-width:700px) {
+    body {
+        padding: 8px !important;
+    }
+    html body header {
+        height: auto !important;
+        min-height: 86px !important;
+        max-height: none !important;
+        padding: 12px !important;
+    }
+}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>Dashboard de Auditoria</h1>
+    <small>Intranet Corporativa | Monitoramento de atividades</small>
+  </div>
+  <span id="status">Aguardando conexão</span>
+</header>
+<main>
+  <p class="subtitle">Visão gerencial dos acessos e atividades registrados na Intranet.</p>
+
+  <section class="filters">
+    <input type="date" id="inicio" title="Data inicial">
+    <input type="date" id="fim" title="Data final">
+    <select id="modulo"><option value="">Todos os módulos</option><option value="ADMIN">ADMIN</option><option value="AVALIACAO">AVALIACAO</option><option value="COMUNICADOS">COMUNICADOS</option><option value="CURSOS">CURSOS</option><option value="DOCUMENTOS">DOCUMENTOS</option><option value="GALERIA">GALERIA</option><option value="LOGIN">LOGIN</option><option value="PESQUISAS">PESQUISAS</option><option value="POWERBI">POWERBI</option><option value="VIDEOS">VIDEOS</option></select>
+    <select id="departamento"><option value="">Todos os departamentos</option><option value="OPERACIONAL">OPERACIONAL</option><option value="OPERACOES II">OPERACOES II</option><option value="TI">TI</option></select>
+    <select id="usuario">
+  <option value="">Todos os usuários</option>
+  <option value="1">DEUSIMAR RIBEIRO REZENDE</option>
+  <option value="2">FUNCIONARIO TESTE NIVEL 1</option>
+  <option value="3">LAURA REGINA</option>
+</select>
+<button onclick="carregar()">Atualizar</button>
+  </section>
+
+  <section class="cards">
+    <div class="card"><div class="label">Total de eventos</div><div class="value" id="eventos">—</div></div>
+    <div class="card"><div class="label">Logins realizados</div><div class="value" id="logins">—</div></div>
+    <div class="card"><div class="label">Usuários distintos</div><div class="value" id="usuarios">—</div></div>
+    <div class="card"><div class="label">Logouts</div><div class="value" id="logouts">—</div></div>
+    <div class="card"><div class="label">Downloads</div><div class="value" id="downloads">—</div></div>
+  </section>
+
+  <section class="charts">
+    <div class="panel">
+      <h2>Eventos por dia</h2>
+      <div id="grafico-dias"></div>
+    </div>
+    <div class="panel">
+      <h2>Módulos mais acessados</h2>
+      <div id="grafico-modulos"></div>
+    </div>
+  </section>
+
+  <section class="panel table-panel">
+    <h2>Histórico de atividades</h2>
+    <table>
+      <thead><tr><th>Data/Hora</th><th>Usuário</th><th>Departamento</th><th>Módulo</th><th>Ação</th><th>Resultado</th></tr></thead>
+      <tbody id="historico"><tr><td colspan="6">Aguardando integração da API de histórico.</td></tr></tbody>
+    </table>
+  </section>
+</main>
+<script>
+const API = "/api/dashboards/auditoria/dados";
+
+function obterToken() {
+  return sessionStorage.getItem("intranet_token") ||
+         sessionStorage.getItem("token") || "";
+}
+
+function barras(elemento, dados, campo, titulo) {
+  const area = document.getElementById(elemento);
+  area.replaceChildren();
+
+  if (!dados.length) {
+    area.textContent = "Nenhum registro encontrado.";
+    return;
+  }
+
+  const maior = Math.max(...dados.map(x => x.quantidade), 1);
+
+  dados.forEach(item => {
+    const linha = document.createElement("div");
+    linha.style.marginBottom = "13px";
+
+    const rotulo = document.createElement("div");
+    rotulo.style.display = "flex";
+    rotulo.style.justifyContent = "space-between";
+    rotulo.style.fontSize = "13px";
+    rotulo.style.marginBottom = "5px";
+
+    const nome = document.createElement("span");
+    nome.textContent = item[campo] || "Não informado";
+
+    const quantidade = document.createElement("strong");
+    quantidade.textContent = item.quantidade;
+
+    rotulo.append(nome, quantidade);
+
+    const fundo = document.createElement("div");
+    fundo.style.background = "#e2e8f0";
+    fundo.style.borderRadius = "6px";
+
+    const barra = document.createElement("div");
+    barra.style.height = "15px";
+    barra.style.width = (item.quantidade / maior * 100) + "%";
+    barra.style.background = "#2563eb";
+    barra.style.borderRadius = "6px";
+
+    fundo.appendChild(barra);
+    linha.append(rotulo, fundo);
+    area.appendChild(linha);
+  });
+}
+
+async function carregar() {
+  const status = document.getElementById("status");
+  status.textContent = "Atualizando...";
+
+  const token = sessionStorage.getItem("intranet_token");
+
+  if (!token) {
+    status.textContent = "Sessão não encontrada nesta aba.";
+    return;
+  }
+
+  const params = new URLSearchParams();
+
+  for (const campo of ["inicio", "fim", "modulo", "departamento", "usuario"]) {
+    const valor = document.getElementById(campo).value;
+    if (valor) params.set(campo === "usuario" ? "usuario_id" : campo, valor);
+  }
+
+  try {
+    const resposta = await fetch(API + "?" + params.toString(), {
+      headers: { Authorization: "Bearer " + token }
+    });
+
+    if (!resposta.ok) throw new Error("HTTP " + resposta.status);
+
+    const dados = await resposta.json();
+    const resumo = dados.resumo;
+
+    const campos = {
+      eventos: "total_eventos",
+      logins: "logins",
+      usuarios: "usuarios_distintos",
+      logouts: "logouts",
+      downloads: "downloads"
+    };
+
+    for (const [id, campo] of Object.entries(campos)) {
+      document.getElementById(id).textContent =
+        Number(resumo[campo] ?? 0).toLocaleString("pt-BR");
+    }
+
+    barras("grafico-dias", dados.por_dia, "data");
+    barras("grafico-modulos", dados.por_modulo, "modulo");
+
+    const corpo = document.getElementById("historico");
+    corpo.replaceChildren();
+
+    dados.historico.forEach(item => {
+      const tr = document.createElement("tr");
+
+      for (const campo of [
+        "data", "usuario", "departamento",
+        "modulo", "acao", "resultado"
+      ]) {
+        const td = document.createElement("td");
+        td.textContent = item[campo] ?? "—";
+        tr.appendChild(td);
+      }
+
+      corpo.appendChild(tr);
+    });
+
+    if (!dados.historico.length) {
+      const tr = document.createElement("tr");
+      const td = document.createElement("td");
+      td.colSpan = 6;
+      td.textContent = "Nenhuma atividade encontrada.";
+      tr.appendChild(td);
+      corpo.appendChild(tr);
+    }
+
+    status.textContent = "Dados atualizados";
+
+  } catch (erro) {
+    status.textContent = "Erro: " + erro.message;
+  }
+}
+carregar();
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+

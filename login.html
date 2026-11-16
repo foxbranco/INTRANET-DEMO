@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Login - Intranet</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(135deg,#092c50,#17629b);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.login{background:#fff;width:100%;max-width:420px;padding:38px;border-radius:18px;box-shadow:0 20px 55px #0004;text-align:center}
+.logo{width:180px;max-width:100%;margin-bottom:20px}
+h2{color:#173b5e;margin:8px 0}
+p{color:#687b8c;font-size:14px;margin-bottom:28px}
+input{width:100%;padding:14px;margin-bottom:15px;border:1px solid #ccd8e3;border-radius:9px;font-size:16px}
+button{width:100%;padding:14px;border:0;border-radius:9px;background:#17629b;color:white;font-size:16px;font-weight:bold;cursor:pointer}
+button:hover{background:#104a76}
+button:disabled{opacity:.6;cursor:wait}
+#mensagem{color:#bd2525;font-size:14px;margin-top:15px;min-height:20px}
+</style>
+</head>
+<body>
+<div class="login">
+<img src="/api/empresa/logo-publico" class="logo" alt="Logotipo da empresa" onerror="this.style.display='none'">
+<h2>Intranet Corporativa</h2>
+<p>Acesse com seu CPF e senha</p>
+<form id="formLogin">
+<input id="cpf" placeholder="CPF" inputmode="numeric" maxlength="14" autocomplete="username" required>
+<input id="senha" type="password" placeholder="Senha" autocomplete="current-password" required>
+<button id="entrar" type="submit">Entrar</button>
+<a href="/esqueci-senha.html"
+   style="display:block;margin-top:16px;color:#17629b;font-size:14px;text-decoration:none">
+   Esqueci minha senha
+</a>
+<div id="mensagem" role="alert"></div>
+</form>
+</div>
+<script>
+const form=document.getElementById("formLogin");
+const mensagem=document.getElementById("mensagem");
+const botao=document.getElementById("entrar");
+
+form.addEventListener("submit",async(e)=>{
+ e.preventDefault();
+ mensagem.textContent="";
+ botao.disabled=true;
+
+ try{
+  const resposta=await fetch("/api/login",{
+   method:"POST",
+   headers:{"Content-Type":"application/json"},
+   body:JSON.stringify({
+    cpf:document.getElementById("cpf").value.replace(/\D/g,""),
+    senha:document.getElementById("senha").value
+   })
+  });
+
+  const dados=await resposta.json();
+
+  if(!resposta.ok)throw Error(dados.detail||"Falha no login");
+
+  sessionStorage.setItem("intranet_token",dados.token);
+
+  if(dados.trocar_senha){
+   window.location.href="/trocar-senha.html";
+  }else{
+   window.location.href="/portal.html";
+  }
+ }catch(erro){
+  mensagem.textContent=erro.message||"Erro de conexão";
+ }finally{
+  botao.disabled=false;
+ }
+});
+</script>
+</body>
+</html>
+

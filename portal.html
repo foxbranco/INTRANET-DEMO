@@ -1,0 +1,55 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Intranet</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<p>Carregando intranet...</p>
+<script>
+(async()=>{
+ const token=sessionStorage.getItem("intranet_token");
+
+ if(!token){
+  location.replace("/login.html");
+  return;
+ }
+
+ try{
+  const resposta=await fetch("/api/intranet",{
+   headers:{Authorization:"Bearer "+token}
+  });
+
+  if(!resposta.ok){
+   sessionStorage.removeItem("intranet_token");
+   location.replace("/login.html");
+   return;
+  }
+
+  const usuarioResposta = await fetch("/api/me", {
+  headers: { Authorization: "Bearer " + token }
+});
+
+if (!usuarioResposta.ok) {
+  sessionStorage.removeItem("intranet_token");
+  location.replace("/login.html");
+  return;
+}
+
+const usuario = await usuarioResposta.json();
+sessionStorage.setItem("intranet_usuario", JSON.stringify(usuario));
+
+const html=await resposta.text();
+  document.open();
+  document.write(html);
+  document.close();
+
+ }catch(erro){
+  document.body.textContent="Erro ao carregar a intranet.";
+ }
+})();
+</script>
+</body>
+</html>
+

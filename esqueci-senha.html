@@ -1,0 +1,72 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Recuperar senha - Intranet</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(135deg,#092c50,#17629b);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.login{background:white;width:100%;max-width:420px;padding:38px;border-radius:18px;box-shadow:0 20px 55px #0004;text-align:center}
+.logo{width:180px;max-width:100%;margin-bottom:20px}
+h2{color:#173b5e}
+p{color:#687b8c;font-size:14px;line-height:1.5}
+input{width:100%;padding:14px;margin:15px 0;border:1px solid #ccd8e3;border-radius:9px;font-size:16px}
+button{width:100%;padding:14px;border:0;border-radius:9px;background:#17629b;color:white;font-size:16px;font-weight:bold;cursor:pointer}
+button:disabled{opacity:.6}
+a{display:block;margin-top:22px;color:#17629b;text-decoration:none}
+#mensagem{font-size:14px;margin-top:18px;line-height:1.5}
+</style>
+</head>
+<body>
+<div class="login">
+<img src="/api/empresa/logo-publico" class="logo" alt="Logotipo da empresa" onerror="this.style.display='none'">
+<h2>Recuperar senha</h2>
+<p>Informe seu CPF. Se houver um e-mail cadastrado, enviaremos um link para criar uma nova senha.</p>
+
+<form id="formRecuperacao">
+<input id="cpf" placeholder="Digite seu CPF" inputmode="numeric" maxlength="14" autocomplete="username" required>
+<button id="enviar" type="submit">Enviar link de recuperação</button>
+</form>
+
+<div id="mensagem" role="status" aria-live="polite"></div>
+<a href="/login.html">Voltar ao login</a>
+</div>
+
+<script>
+document.getElementById("formRecuperacao").addEventListener("submit",async e=>{
+ e.preventDefault();
+ const botao=document.getElementById("enviar");
+ const mensagem=document.getElementById("mensagem");
+ const cpf=document.getElementById("cpf").value.replace(/\D/g,"");
+
+ if(cpf.length!==11){
+  mensagem.style.color="#bd2525";
+  mensagem.textContent="Informe um CPF com 11 dígitos.";
+  return;
+ }
+
+ botao.disabled=true;
+ mensagem.textContent="Enviando solicitação...";
+
+ try{
+  const resposta=await fetch("/api/esqueci-senha",{
+   method:"POST",
+   headers:{"Content-Type":"application/json"},
+   body:JSON.stringify({cpf})
+  });
+
+  if(!resposta.ok)throw new Error("Não foi possível processar a solicitação.");
+
+  mensagem.style.color="#237346";
+  mensagem.textContent="Se o CPF possuir um e-mail cadastrado, enviaremos as instruções de recuperação.";
+ }catch(erro){
+  mensagem.style.color="#bd2525";
+  mensagem.textContent=erro.message;
+ }finally{
+  botao.disabled=false;
+ }
+});
+</script>
+</body>
+</html>

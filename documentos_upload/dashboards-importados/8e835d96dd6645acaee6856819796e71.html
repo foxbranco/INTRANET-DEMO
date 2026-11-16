@@ -1,0 +1,476 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Megavig 360° — V36 Pulse</title><style>
+:root{font-family:Inter,'Segoe UI',Arial,sans-serif;color:#17324d;background:#edf3f8}*{box-sizing:border-box}body{margin:0;padding:8px 12px 16px}.top{background:linear-gradient(110deg,#10365d,#11668c);border-radius:9px;color:white;padding:10px 16px;display:flex;justify-content:space-between;align-items:center;gap:12px}.eyebrow{font-size:9px;letter-spacing:1px;color:#a8ddf1;font-weight:800}h1{margin:1px 0;font-size:19px}.subtitle,.topright{font-size:10px;color:#d4e9f5}.topright{text-align:right}.section{background:white;border:1px solid #dce6f0;border-radius:9px;margin-top:7px;padding:9px 11px;box-shadow:0 1px 5px #123b6108}.sectionhead{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:7px}.sectionhead h2{font-size:12px;margin:0;display:flex;align-items:center;gap:7px}.num{display:inline-grid;place-items:center;background:#e7f2fa;color:#12618a;border-radius:5px;width:20px;height:20px;font-size:10px}.desc{font-size:9px;color:#8190a2}.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}.metrics.three{grid-template-columns:repeat(3,minmax(0,1fr))}.metrics.two{grid-template-columns:repeat(2,minmax(0,1fr))}.metric{border:1px solid #e1eaf2;border-radius:7px;background:#f9fbfe;padding:7px 10px;min-width:0;border-left:3px solid var(--accent,#2d83b9);display:flex;align-items:center;justify-content:space-between;gap:8px}.metric .label{font-size:10px;color:#61778b;font-weight:700;min-height:0}.metric .value{font-size:22px;color:#173f68;font-weight:850;letter-spacing:-.5px;white-space:nowrap}.metric .note{display:none}.metric .value.missing{color:#a4b2c0}.mini-title{font-size:10px;font-weight:800;color:#49667d;margin:8px 0 5px}.columns{display:grid;grid-template-columns:1fr 1fr;gap:8px}.status{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #edf1f5;padding:5px 0;font-size:11px}.status:last-child{border-bottom:0}.status b{font-size:15px;color:#1b5077}.statuspanel{border:1px solid #e1eaf2;border-radius:7px;padding:7px 11px}.statuspanel h3{font-size:11px;margin:0 0 3px;color:#2b5575}.foot{font-size:9px;color:#8493a5;margin:9px 3px;line-height:1.4}.notice{font-size:9px;color:#8b6d3c;background:#fff9eb;border:1px solid #f1e3c4;border-radius:5px;padding:5px 8px;margin-top:6px}@media(max-width:900px){.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.metrics.three{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:620px){body{padding:6px}.top{padding:9px}.topright{font-size:9px}h1{font-size:17px}.section{padding:8px}.metrics,.metrics.three,.metrics.two{grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}.metric{padding:6px}.metric .label{font-size:9px}.metric .value{font-size:18px}.columns{grid-template-columns:1fr}.desc{display:none}}
+
+/* V8: tres modulos por linha no desktop */
+#content{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;align-items:stretch}
+#content>.section{margin-top:0;min-width:0;padding:8px 9px}
+#content>.foot{grid-column:1/-1;margin:2px 4px}
+#content .metrics,#content .metrics.three,#content .metrics.two{grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}
+#content .metric{padding:4px 6px;min-height:29px;gap:5px}
+#content .metric .label{font-size:9px;line-height:1.2}
+#content .metric .value{font-size:16px}
+#content .sectionhead{margin-bottom:6px}
+#content .desc{display:none}
+#content .columns{gap:5px}
+#content .statuspanel{padding:6px 7px}
+#content .status{padding:4px 0}
+#content .status b{font-size:14px}
+#content .notice{padding:5px 7px;margin-top:5px;font-size:9px}
+#content .mini-title{margin:6px 0 4px}
+@media(max-width:1150px){#content{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:700px){#content{grid-template-columns:1fr}}
+@media(max-width:420px){#content .columns{grid-template-columns:1fr}#content .metric .label{font-size:9px}#content .metric .value{font-size:16px}}
+
+/* V9: contraste, tipografia e legibilidade sem perder a grade compacta */
+#content .metric{min-height:38px;padding:6px 8px;gap:6px;background:#f7faff}
+#content .metric .label{font-size:11.5px;line-height:1.2;color:#274a68;font-weight:750}
+#content .metric .value{font-size:24px;line-height:1;color:#103d67;font-weight:900;letter-spacing:-.5px}
+#content .sectionhead h2{font-size:14px}
+#content .status{font-size:12px}
+#content .status b{font-size:19px}
+#content .statuspanel h3{font-size:12px}
+@media(max-width:1250px){#content .metric .label{font-size:10.5px}#content .metric .value{font-size:21px}}
+@media(max-width:700px){#content .metric .label{font-size:11px}#content .metric .value{font-size:23px}}
+
+/* V14: grafico mensal compacto dentro do primeiro card */
+#content .colab-historico{margin-top:9px;border-top:1px solid #e3ebf2;padding-top:7px}
+#content .colab-historico .historico-info{font-size:10px;font-weight:750;color:#315776;margin-bottom:3px}
+#content .colab-historico .chart-wrap{width:100%;overflow-x:auto}
+#content .colab-historico svg{display:block;width:100%;height:112px;min-width:390px}
+#content .colab-historico .chart-note{font-size:9px;line-height:1.25;color:#71869b;margin-top:3px}
+
+/* V15: evolução mensal de logins no próprio card de Engajamento */
+#content .eng-historico{margin-top:9px;border-top:1px solid #e3ebf2;padding-top:7px}
+#content .eng-historico .historico-info{font-size:10px;font-weight:750;color:#315776;margin-bottom:3px}
+#content .eng-historico .chart-wrap{overflow-x:auto;width:100%}
+#content .eng-historico svg{display:block;width:100%;height:72px;min-width:390px}
+#content .trein-historico{margin-top:8px;border-top:1px solid #e3ebf2;padding-top:6px}
+#content .trein-historico .historico-info{font-size:10px;font-weight:750;color:#315776;margin-bottom:3px}
+#content .trein-historico svg{display:block;width:100%;height:102px;min-width:380px}
+#content .trein-historico .chart-wrap{width:100%;overflow-x:auto}
+#content .trein-historico .chart-note{font-size:9px;color:#71869b;margin-top:3px}
+#content .eng-historico .chart-note{font-size:9px;color:#71869b;margin-top:3px}
+.aval-rings{margin-top:10px;border-top:1px solid #e4edf5;padding-top:8px}.aval-rings-title{font-size:11px;font-weight:800;color:#214e70}.aval-rings-body{display:flex;align-items:center;gap:10px}.aval-rings svg{width:205px;max-width:48%;height:auto;flex-shrink:0}.aval-rings-legend{font-size:11px;flex:1;line-height:1.8}.aval-dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px}.aval-detail{display:flex;justify-content:space-between;gap:6px;border-top:1px solid #edf1f5}.aval-method{font-size:9px;color:#71859a;line-height:1.4;margin-top:4px}@media(max-width:420px){.aval-rings svg{width:155px}.aval-rings-legend{font-size:10px}}</style><style>
+.pesquisas-no-card{margin-top:13px;padding-top:11px;border-top:1px solid #dce6f0}
+.pesquisas-no-card h3{margin:0 0 8px;font-size:14px;font-weight:800;color:#123b61}
+.pesquisas-no-card .metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+@media(max-width:420px){.pesquisas-no-card .metric .label{font-size:9px}}
+</style>
+<style>
+/* V19: modalidades lado a lado, indicadores empilhados em cada coluna */
+#content .trein-modalidades{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;align-items:start}
+#content .trein-col{min-width:0}
+#content .trein-col h3{margin:0 0 6px;padding:6px 8px;border-radius:6px;background:#eaf3fb;color:#12446e;font-size:12px;text-align:center}
+#content .trein-col .metrics.trein-metrics{display:grid;grid-template-columns:minmax(0,1fr);gap:5px}
+#content .trein-col .metric{min-height:38px}
+#content .trein-col .metric .label{min-width:0;overflow-wrap:anywhere}
+@media(max-width:400px){#content .trein-modalidades{gap:5px}#content .trein-col .metric{padding:5px}#content .trein-col .metric .value{font-size:19px}}
+</style><style>
+/* V23: treinamento em painel fixo, indicadores 55% + barras horizontais 45% */
+#content .section:has(>.trein-modalidades){display:grid;grid-template-columns:minmax(0,55fr) minmax(0,45fr);column-gap:8px;align-content:start}
+#content .section:has(>.trein-modalidades)>.sectionhead{grid-column:1/-1}
+#content .section:has(>.trein-modalidades)>.trein-modalidades{grid-column:1;gap:5px;min-width:0}
+#content .section:has(>.trein-modalidades)>.trein-historico{grid-column:2;margin:0;padding:0 0 0 7px;border-top:0;border-left:1px solid #e3ebf2;min-width:0;align-self:start}
+#content .trein-col h3{padding:4px 2px;font-size:10px;margin-bottom:4px}
+#content .trein-col .metrics.trein-metrics{gap:4px}
+#content .trein-col .metric{min-height:38px;padding:4px 5px;gap:2px}
+#content .trein-col .metric .label{font-size:9px;line-height:1.1}
+#content .trein-col .metric .value{font-size:19px}
+#content .trein-historico .historico-info{font-size:9px;line-height:1.2;margin-bottom:3px}
+#content .trein-historico .chart-wrap{overflow:hidden}
+#content .trein-historico svg{width:100%;min-width:0;height:224px;display:block}
+#content .trein-historico .chart-note{font-size:8px;line-height:1.2;margin-top:3px}
+@media(max-width:460px){#content .section:has(>.trein-modalidades){grid-template-columns:minmax(0,55fr) minmax(0,45fr);column-gap:4px}#content .trein-col .metric .value{font-size:15px}#content .trein-col .metric .label{font-size:8px}#content .trein-modalidades{gap:3px!important}#content .trein-historico svg{height:215px}}
+
+/* V25: titulos dos modulos destacados, sem alterar o tamanho dos cards */
+#content .sectionhead{background:#13577b;border-radius:6px;padding:6px 9px;margin-bottom:8px}
+#content .sectionhead h2{color:#fff;font-size:14px;font-weight:850;letter-spacing:.1px}
+#content .pesquisas-no-card h3{background:#13577b;color:#fff;border-radius:6px;padding:6px 9px;font-size:14px}
+#content .colab-historico .historico-info,#content .eng-historico .historico-info,#content .trein-historico .historico-info,#content .aval-rings-title{color:#0d5277;font-weight:850}
+</style><style id="megavig360-email-css">.topright{display:flex;flex-direction:column;align-items:flex-end;gap:5px}.megavig-email-btn{background:#fff;color:#125477;border:1px solid #c6e5f3;border-radius:7px;padding:7px 12px;font-size:11px;font-weight:800;cursor:pointer;white-space:nowrap}.megavig-email-btn:hover{background:#e9f6ff}.megavig-email-msg{font-size:13px;line-height:1.4;font-weight:800;color:#fff;max-width:350px;text-align:center;background:#0a3855;border:1px solid #a9e5ff;border-radius:8px;padding:10px 12px;box-shadow:0 2px 8px #062b4b55}.megavig-email-msg[hidden]{display:none}.megavig-email-msg[data-state="loading"]::before{content:"";display:inline-block;width:13px;height:13px;border:2px solid #ffffff66;border-top-color:#fff;border-radius:50%;vertical-align:-3px;margin-right:8px;animation:megavig-spin .75s linear infinite}@keyframes megavig-spin{to{transform:rotate(360deg)}}.megavig-email-msg[data-state="success"]{background:#0e624b;border-color:#91e8c0}.megavig-email-msg[data-state="error"]{background:#8b2635;border-color:#ffc0c9}.megavig-email-btn:disabled{opacity:.7;cursor:wait}@media(max-width:620px){.top{flex-wrap:wrap}.topright{align-items:flex-start;text-align:left}.megavig-email-msg{text-align:left}}</style><style id="megavig-pulse-demo-css">
+/* V32: painel demonstrativo, sem agendamentos reais ou disparos automáticos */
+#content>.pulse-demo{grid-column:3;grid-row:2;background:linear-gradient(115deg,#f7fbff,#edf7fc);border:1px solid #b9d9eb;padding:12px 14px}
+.pulse-header{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:9px}
+.pulse-brand{display:flex;align-items:center;gap:9px}.pulse-logo{background:#115d80;color:white;border-radius:9px;padding:9px;font-size:20px}
+.pulse-name{font-size:17px;font-weight:900;color:#123e5d}.pulse-sub{font-size:10px;color:#57758d;margin-top:2px}
+.pulse-demo-flag{font-size:9px;background:#fff0d4;color:#85530d;border:1px solid #e8cb91;border-radius:5px;padding:5px 7px;font-weight:800}
+.pulse-grid{display:grid;grid-template-columns:1fr;gap:6px}
+.pulse-item{background:#fff;border:1px solid #d6e7f1;border-radius:8px;padding:7px 9px;min-width:0}
+.pulse-item-head{display:flex;align-items:center;gap:7px;margin-bottom:7px}.pulse-ico{font-size:18px}.pulse-item-title{font-size:12px;font-weight:850;color:#17486b}
+.pulse-item-desc{font-size:10px;line-height:1.5;color:#56718a}.pulse-pill{display:inline-block;margin-top:8px;border-radius:20px;padding:4px 8px;background:#e8f7ed;color:#17643b;font-size:9px;font-weight:850}
+.pulse-pill.wait{background:#eaf2fc;color:#195d8b}
+.pulse-bottom{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:10px;flex-wrap:wrap}
+.pulse-note{font-size:10px;color:#4b6b80}.pulse-config-btn{background:#145d83;color:#fff;border:0;border-radius:7px;padding:9px 13px;font-weight:800;font-size:11px;cursor:pointer}
+.pulse-modal[hidden]{display:none}.pulse-modal{position:fixed;inset:0;background:#09243a99;z-index:1000;display:flex;align-items:center;justify-content:center;padding:15px}
+.pulse-dialog{width:min(540px,100%);max-height:90vh;overflow:auto;background:#fff;border-radius:12px;padding:20px;box-shadow:0 16px 45px #051e3766;color:#1d425f}
+.pulse-dialog h2{margin:0 0 6px;font-size:20px}.pulse-dialog p{font-size:12px;color:#597287}.pulse-fields{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}.pulse-fields label{font-size:11px;font-weight:800;display:flex;flex-direction:column;gap:5px}
+.pulse-fields select,.pulse-fields input{border:1px solid #cadbe7;border-radius:6px;padding:9px;font-size:12px;width:100%;background:#fff;color:#21455d}
+.pulse-actions{display:flex;justify-content:flex-end;gap:8px}.pulse-actions button{border-radius:7px;border:1px solid #bdd4e2;background:#fff;padding:9px 12px;cursor:pointer;font-weight:800}.pulse-actions .pulse-primary{background:#145d83;color:#fff;border-color:#145d83}
+.pulse-preview{background:#edf6fb;padding:10px;border-radius:8px;font-size:12px;line-height:1.6}
+@media(min-width:701px) and (max-width:1150px){#content>.pulse-demo{grid-column:2;grid-row:auto}}@media(max-width:700px){#content>.pulse-demo{grid-column:1;grid-row:auto}.pulse-grid{grid-template-columns:1fr}.pulse-fields{grid-template-columns:1fr}}
+@media print{.pulse-config-btn,.pulse-modal{display:none!important}}
+</style><style id="pulse-v34-compact">
+#content>.pulse-demo{grid-column:3;grid-row:2;align-self:start;padding:9px 10px;background:#fff;border:1px solid #dce6f0}
+#content .pulse-header{margin-bottom:8px}
+#content .pulse-logo{font-size:15px;padding:6px 8px;border-radius:6px}
+#content .pulse-name{font-size:15px}
+#content .pulse-sub{font-size:10px}
+#content .pulse-subscriptions{display:grid;gap:5px}
+#content .pulse-subscription{display:flex;align-items:center;justify-content:space-between;gap:5px;padding:7px 8px;background:#f7faff;border:1px solid #e0ebf4;border-radius:6px}
+#content .pulse-subscription-info{display:flex;align-items:center;justify-content:space-between;gap:10px;min-width:0;flex:1}
+#content .pulse-subscription-info strong{font-size:13px;color:#17486b;min-width:0}
+#content .pulse-subscription-info span{font-size:12px;color:#56718a;line-height:1.3;white-space:nowrap;text-align:right}
+#content .pulse-remove{background:transparent;border:0;color:#8094a6;font-size:19px;cursor:pointer;padding:0 4px}
+#content .pulse-empty{font-size:11px;color:#61778b;padding:12px 4px}
+#content .pulse-bottom{margin-top:8px;justify-content:flex-end}
+#content .pulse-config-btn{padding:8px 12px;font-size:12px}
+@media(max-width:520px){#content .pulse-subscription-info{flex-wrap:wrap;gap:3px}#content .pulse-subscription-info span{white-space:normal;text-align:left}}
+@media(max-width:1150px){#content>.pulse-demo{grid-column:auto;grid-row:auto}}
+</style><style id="pulse-v36-alinhamento">
+/* Pulse com mesma altura do card de Avaliações na linha 2 */
+@media(min-width:1151px){#content>.pulse-demo{grid-column:3;grid-row:2;align-self:stretch;min-height:0}}
+#content>.pulse-demo{display:flex;flex-direction:column;padding:8px 9px;background:#fff}
+/* Cabeçalho com mesma faixa e alinhamento dos demais módulos */
+#content>.pulse-demo .pulse-header{background:#b92332;border-radius:6px;padding:6px 9px;min-height:31px;margin:0 0 8px;gap:6px;flex-wrap:nowrap}
+#content>.pulse-demo .pulse-brand{gap:8px;min-width:0}
+#content>.pulse-demo .pulse-logo{background:#fff;color:#b92332;border-radius:5px;padding:3px 6px;font-size:14px;line-height:1.25}
+#content>.pulse-demo .pulse-name{color:#fff;font-size:14px;line-height:1.1}
+#content>.pulse-demo .pulse-name span{color:#fff!important}
+#content>.pulse-demo .pulse-sub{color:#ffe3e6;font-size:10px}
+#content>.pulse-demo .pulse-bottom{margin-top:auto;padding-top:12px;justify-content:flex-end}
+#content>.pulse-demo .pulse-config-btn{background:#b92332}
+#content>.pulse-demo .pulse-config-btn:hover{background:#961827}
+/* V37: faixa vermelha com altura igual aos títulos dos demais cards */
+#content>.pulse-demo .pulse-header{height:31px;min-height:31px;max-height:31px;padding:6px 9px;margin-bottom:8px;align-items:center}
+#content>.pulse-demo .pulse-logo{width:22px;height:22px;display:grid;place-items:center;padding:0;font-size:13px;flex-shrink:0}
+#content>.pulse-demo .pulse-name{display:flex;align-items:center;gap:7px;white-space:nowrap;font-size:14px;line-height:1}
+#content>.pulse-demo .pulse-ai-label{font-size:11px;font-weight:600;color:#fff!important}
+@media(max-width:520px){#content>.pulse-demo .pulse-name{white-space:normal;font-size:12px}#content>.pulse-demo .pulse-ai-label{font-size:10px}}
+#content .pulse-radar-name{display:inline-flex;align-items:center;gap:7px}
+#content .pulse-radar-icon{font-size:17px;line-height:1}
+#content .pulse-radar-label{display:flex;flex-direction:column;gap:1px}
+#content .pulse-radar-label small{font-size:10px;font-weight:600;color:#6a8298;line-height:1.1}
+</style><style id="pulse-acoes-css">#content .pulse-subscription-actions{display:flex;align-items:center;gap:5px;flex-shrink:0}#content .pulse-subscription-info{flex-wrap:wrap}#content .pulse-subscription-info span{white-space:normal}@media(max-width:620px){#content .pulse-subscription{flex-wrap:wrap}#content .pulse-subscription-actions{margin-left:auto}}</style><style id="pulse-type-tag-css">#content .pulse-type-tag{font-size:10px;color:#145d83;background:#e7f2fa;border:1px solid #c9e1f0;border-radius:4px;padding:2px 5px;white-space:nowrap;font-weight:700}#content .pulse-subscription-info{gap:6px}</style><style id="megavig-visao-css">.megavig-title-row{display:flex;align-items:center;column-gap:72px;row-gap:7px;flex-wrap:wrap}.megavig-title-row h1{margin:0}.megavig-visao-label{font-size:10px;font-weight:750;color:#fff;margin-right:12px}.megavig-visao-select{width:126px;min-width:126px;height:30px;background:#fff;color:#125477;border:1px solid #a9e0fa;border-radius:6px;padding:3px 6px;font-size:11px;font-weight:750;cursor:pointer;box-shadow:0 1px 3px #062b4b25}.megavig-visao-select:focus-visible{outline:3px solid #ffd46a}@media(max-width:620px){.megavig-title-row{column-gap:25px;row-gap:6px}.megavig-visao-select{width:118px;min-width:118px}}@media print{.megavig-visao-label,.megavig-visao-select{display:none!important}}</style><style id="pulse-nivel-1-logo">#content>.pulse-empresa-logo{display:flex;align-items:center;justify-content:center;min-height:220px;background:#fff}#content .pulse-logo-holder{display:flex;align-items:center;justify-content:center;width:100%;height:100%}#content .pulse-logo-holder img{max-width:75%;max-height:190px;object-fit:contain}#content .pulse-logo-holder strong{font-size:40px;letter-spacing:3px;color:#13577b}.pulse-activate,.pulse-pause{font-size:11px;padding:5px 8px;border-radius:5px;border:1px solid #b92332;background:white;color:#b92332;cursor:pointer;margin-right:5px}#content .pulse-edit{font-size:11px;padding:5px 8px;border:1px solid #9eb3c5;background:#fff;color:#174b6c;border-radius:5px;cursor:pointer;margin-right:5px}</style><style id="pulse-v3-layout-uniforme">
+#content .pulse-subscriptions{gap:7px}
+#content .pulse-subscription{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;min-height:66px;padding:10px 11px;background:#f7faff}
+#content .pulse-subscription-info{display:flex;flex-direction:column;align-items:stretch;justify-content:center;gap:6px;min-width:0}
+#content .pulse-subscription-heading{display:flex;align-items:center;gap:9px;min-width:0}
+#content .pulse-subscription-heading strong{font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+#content .pulse-type-tag{display:inline-flex;align-items:center;justify-content:center;flex:0 0 80px;min-width:80px;max-width:80px;font-size:10px;padding:4px 5px}
+#content .pulse-subscription-meta{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+#content .pulse-subscription-meta>span:first-child{font-size:11px;color:#56718a;white-space:normal;text-align:left}
+#content .pulse-status{font-size:10px;font-weight:800;border-radius:10px;padding:2px 7px;background:#eef1f5;color:#657587;white-space:nowrap}
+#content .pulse-status-ATIVA{background:#e5f5ec;color:#197248}
+#content .pulse-status-PAUSADA{background:#fff1df;color:#936018}
+#content .pulse-status-RASCUNHO{background:#edf0f4;color:#677689}
+#content .pulse-subscription-actions{display:flex;align-items:center;justify-content:flex-end;gap:5px;margin:0}
+#content .pulse-subscription-actions button{margin:0;white-space:nowrap}
+@media(max-width:560px){#content .pulse-subscription{grid-template-columns:1fr;gap:8px}#content .pulse-subscription-actions{justify-content:flex-end}#content .pulse-subscription-heading strong{white-space:normal;overflow-wrap:anywhere}}
+</style><style id="pulse-group-layout-v4">
+#content .pulse-subscriptions{display:flex;flex-direction:column;gap:10px}
+#content .pulse-group{border:1px solid #dce6f0;border-radius:7px;overflow:hidden;background:#fff}
+#content .pulse-group-title{display:flex;align-items:center;gap:8px;background:#eaf2f9;color:#164a6e;font-size:12px;font-weight:850;padding:8px 10px;border-bottom:1px solid #dce6f0}
+#content .pulse-group-title span{background:#fff;color:#55748a;border:1px solid #d6e3ed;border-radius:12px;padding:1px 7px;font-size:10px}
+#content .pulse-group-rows{display:flex;flex-direction:column}
+#content .pulse-group .pulse-subscription{display:flex;align-items:center;gap:8px;min-height:46px;padding:7px 9px;border:0;border-radius:0;background:#fff}
+#content .pulse-group .pulse-subscription+.pulse-subscription{border-top:1px solid #edf1f5}
+#content .pulse-group .pulse-subscription-info{display:flex;flex:1;align-items:center;gap:7px;min-width:0;flex-wrap:wrap}
+#content .pulse-group .pulse-subscription-info strong{font-size:12px;color:#16476a;flex:1 1 135px;overflow-wrap:anywhere}
+#content .pulse-group .pulse-subscription-info .pulse-row-meta{font-size:10px;color:#60788c;white-space:normal;text-align:left;flex:0 1 auto}
+#content .pulse-group .pulse-status{font-size:10px;flex-shrink:0}
+#content .pulse-group .pulse-subscription-actions{display:flex;gap:4px;align-items:center;margin-left:auto}
+#content .pulse-group .pulse-subscription-actions button{margin-right:0}
+@media(max-width:620px){#content .pulse-group .pulse-subscription{align-items:flex-start;flex-wrap:wrap}#content .pulse-group .pulse-subscription-actions{margin-left:auto}#content .pulse-group .pulse-subscription-info{flex-basis:100%}}
+</style><style id="pulse-group-linhas-v5">
+/* Cada automação ocupa UMA linha compacta; neutraliza regras antigas da grade. */
+#content .pulse-group-rows{display:block!important}
+#content .pulse-group .pulse-subscription{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;align-items:center!important;min-height:45px!important;height:auto!important;padding:7px 10px!important;gap:8px!important;margin:0!important}
+#content .pulse-group .pulse-subscription-info{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:flex-start!important;flex-wrap:wrap!important;gap:5px 10px!important;min-height:0!important;height:auto!important;margin:0!important;padding:0!important;text-align:left!important}
+#content .pulse-group .pulse-subscription-info strong{display:inline!important;flex:0 1 165px!important;min-width:95px!important;max-width:190px!important;margin:0!important;text-align:left!important;font-size:12px!important;line-height:1.3!important}
+#content .pulse-group .pulse-subscription-info .pulse-row-meta{display:inline!important;flex:0 1 auto!important;margin:0!important;text-align:left!important;line-height:1.3!important}
+#content .pulse-group .pulse-subscription-info .pulse-status{display:inline-flex!important;flex:0 0 auto!important;margin:0!important;line-height:1.2!important}
+#content .pulse-group .pulse-subscription-actions{display:flex!important;align-items:center!important;justify-content:flex-end!important;gap:4px!important;min-height:0!important;height:auto!important;margin:0!important;padding:0!important;white-space:nowrap!important}
+#content .pulse-group .pulse-subscription-actions button{position:static!important;transform:none!important;margin:0!important}
+@media(max-width:540px){#content .pulse-group .pulse-subscription{grid-template-columns:minmax(0,1fr)!important}#content .pulse-group .pulse-subscription-actions{justify-content:flex-start!important}#content .pulse-group .pulse-subscription-info strong{flex-basis:100%!important;max-width:none!important}}
+</style><style id="pulse-compact-radar-preview">
+/* Linhas menores e consistentes, sem afetar os outros cards */
+#content .pulse-group .pulse-subscription{min-height:34px!important;padding:3px 8px!important;gap:5px!important}
+#content .pulse-group .pulse-subscription-info{gap:4px 8px!important;flex-wrap:nowrap!important}
+#content .pulse-group .pulse-subscription-info strong{flex:0 1 175px!important;font-size:11px!important;min-width:90px!important}
+#content .pulse-group .pulse-row-meta{font-size:10px!important}
+#content .pulse-group .pulse-status{font-size:10px!important;padding:2px 6px!important}
+#content .pulse-group .pulse-subscription-actions{gap:3px!important}
+#content .pulse-group .pulse-subscription-actions button{font-size:10px!important;padding:3px 6px!important;line-height:1.2!important}
+#content .pulse-group-title{padding:6px 9px!important;font-size:12px!important}
+#content .pulse-group+.pulse-group{margin-top:7px}
+#content .pulse-demo-only{background:#fafcff}
+#content .pulse-demo-only .pulse-preview-tag{font-size:10px;color:#6b7f93;font-weight:600}
+@media(max-width:650px){#content .pulse-group .pulse-subscription{grid-template-columns:minmax(0,1fr)!important}#content .pulse-group .pulse-subscription-info{flex-wrap:wrap!important}#content .pulse-group .pulse-subscription-actions{justify-content:flex-end!important}}
+</style><style id="pulse-altura-fixa-v6">
+/* O conteúdo excedente rola apenas dentro da lista de automações. */
+#content>.pulse-demo:not(.pulse-empresa-logo){min-height:0!important;overflow:hidden!important;}
+#content>.pulse-demo:not(.pulse-empresa-logo) .pulse-header{flex:0 0 31px!important;}
+#content>.pulse-demo:not(.pulse-empresa-logo) #pulse-subscriptions{flex:1 1 auto!important;min-height:0!important;overflow-y:auto!important;overflow-x:hidden!important;scrollbar-width:thin;overscroll-behavior:contain;}
+#content>.pulse-demo:not(.pulse-empresa-logo) .pulse-bottom{flex:0 0 auto!important;margin-top:0!important;padding-top:8px!important;}
+</style><style id="pulse-scrollbar-visivel-v7">
+/* Rolagem vertical sempre visível somente na área de agendamentos. */
+#content>.pulse-demo:not(.pulse-empresa-logo) #pulse-subscriptions{
+  overflow-y:scroll!important;
+  overflow-x:hidden!important;
+  scrollbar-width:auto!important;
+  scrollbar-color:#8ca9bf #edf3f8!important;
+  padding-right:3px;
+}
+#content>.pulse-demo:not(.pulse-empresa-logo) #pulse-subscriptions::-webkit-scrollbar{width:11px}
+#content>.pulse-demo:not(.pulse-empresa-logo) #pulse-subscriptions::-webkit-scrollbar-track{background:#edf3f8;border-radius:8px}
+#content>.pulse-demo:not(.pulse-empresa-logo) #pulse-subscriptions::-webkit-scrollbar-thumb{background:#8ca9bf;border:2px solid #edf3f8;border-radius:8px}
+#content>.pulse-demo:not(.pulse-empresa-logo) #pulse-subscriptions::-webkit-scrollbar-thumb:hover{background:#5c819d}
+</style><style id="pulse-rolagem-grupos-sem-compressao-v9">
+/* Impede que os grupos encolham para caber na lista: cria rolagem real. */
+#content>.pulse-demo:not(.pulse-empresa-logo) #pulse-subscriptions{display:flex!important;flex-direction:column!important;flex-wrap:nowrap!important;min-height:0!important;overflow-y:scroll!important;overflow-x:hidden!important;scrollbar-width:auto!important;}
+#content>.pulse-demo:not(.pulse-empresa-logo) #pulse-subscriptions>.pulse-group{flex:0 0 auto!important;flex-shrink:0!important;min-height:max-content!important;}
+#content>.pulse-demo:not(.pulse-empresa-logo) #pulse-subscriptions>.pulse-empty{flex:0 0 auto!important;}
+</style><style id="pulse-drilldown-v10">
+/* Grupos recolhidos por padrão; a lista continua rolando normalmente. */
+#content #pulse-subscriptions .pulse-group{flex:0 0 auto!important;min-height:0!important;}
+#content #pulse-subscriptions summary.pulse-group-title{display:flex!important;align-items:center!important;cursor:pointer!important;list-style:none!important;user-select:none;gap:7px!important;}
+#content #pulse-subscriptions summary.pulse-group-title::-webkit-details-marker{display:none}
+#content #pulse-subscriptions summary.pulse-group-title:focus-visible{outline:2px solid #145d83;outline-offset:-2px}
+#content #pulse-subscriptions .pulse-expand-icon{display:inline-block!important;background:none!important;border:0!important;padding:0!important;font-size:13px!important;color:#145d83!important;transition:transform .15s ease;}
+#content #pulse-subscriptions details[open]>.pulse-group-title .pulse-expand-icon{transform:rotate(90deg)}
+#content #pulse-subscriptions details:not([open])>.pulse-group-rows{display:none!important}
+</style><style id="pulse-acoes-feedback-v11">
+.pulse-feedback[hidden],.pulse-confirm[hidden]{display:none!important}
+#content>.pulse-demo .pulse-feedback{font-size:11px;padding:6px 9px;margin:-2px 0 7px;border-radius:5px;background:#e7f4eb;color:#175b38;border:1px solid #c3e4d0;flex:0 0 auto}
+#content>.pulse-demo .pulse-feedback.erro{background:#fff0ef;color:#9b2430;border-color:#f1c8cd}
+.pulse-confirm{position:fixed;inset:0;z-index:2000;display:flex;align-items:center;justify-content:center;background:#09243a99;padding:14px}
+.pulse-confirm-dialog{background:white;color:#17324d;width:min(390px,100%);border-radius:10px;padding:20px;box-shadow:0 14px 35px #0004}
+.pulse-confirm-dialog h3{font-size:17px;margin:0 0 9px}.pulse-confirm-dialog p{font-size:12px;line-height:1.5}
+.pulse-confirm-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:18px}
+.pulse-confirm-actions button{border:1px solid #b9cedd;border-radius:6px;background:#fff;padding:8px 14px;cursor:pointer}
+.pulse-confirm-actions #pulse-confirm-delete{background:#b92332;border-color:#b92332;color:#fff;font-weight:700}
+</style></head><body><header class="top"><div><div class="eyebrow">INTELIGÊNCIA CORPORATIVA · MEGAVIG</div><h1>Megavig 360°</h1><div class="subtitle">Pessoas · Documentos · Engajamento · Desenvolvimento</div></div><div class="topright"><div>● Dados atualizados ao abrir</div><button class="megavig-email-btn" id="megavig360-email-btn" type="button">✉ Enviar PDF para meu e-mail</button><div class="megavig-email-msg" id="megavig360-email-msg" role="status" aria-live="polite" hidden></div></div></header><main id="content"></main><!-- MEGAVIG_360_USUARIO --><!-- MEGAVIG_360_DADOS --><script>
+// Personalizacao apenas dos textos visiveis; nomes de APIs e eventos permanecem iguais.
+const EMPRESA_VISUAL = String(window.__INTRANET_EMPRESA_NOME || 'Intranet').trim();
+const textoEmpresa = valor => String(valor ?? '')
+  .replace(/Megavig\s*360°?/gi, EMPRESA_VISUAL + ' 360°')
+  .replace(/(?:Megavig\s+Pulse|Pulse\s+Megavig)/gi, 'Pulse ' + EMPRESA_VISUAL)
+  .replace(/Radar\s+Megavig/gi, 'Radar ' + EMPRESA_VISUAL)
+  .replace(/Megavig/gi, EMPRESA_VISUAL);
+const marcaVisivel = () => {
+ document.title = textoEmpresa(document.title);
+ const walk = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+ let n; while ((n = walk.nextNode())) {
+  if (n.parentElement?.closest('script,style,textarea,code')) continue;
+  const v=textoEmpresa(n.nodeValue); if(v!==n.nodeValue)n.nodeValue=v;
+ }
+ document.querySelectorAll('img[alt], [aria-label], [title]').forEach(el=>{
+  for(const a of ['alt','aria-label','title'])if(el.hasAttribute(a))el.setAttribute(a,textoEmpresa(el.getAttribute(a)));
+ });
+};
+new MutationObserver(() => { if(!window.__marcaPendente){window.__marcaPendente=true;queueMicrotask(()=>{window.__marcaPendente=false;marcaVisivel();});} }).observe(document.body,{childList:true,subtree:true});
+marcaVisivel();
+
+document.getElementById('megavig-visao')?.addEventListener('change',function(){this.disabled=true;window.parent.postMessage({tipo:'MEGAVIG_360_ALTERAR_VISAO',visao:this.value},'*');});
+ document.getElementById('megavig360-email-btn').addEventListener('click',async function(){
+ const btn=this, m=document.getElementById('megavig360-email-msg');
+ if(m._hideTimer){clearTimeout(m._hideTimer);m._hideTimer=null;}
+ btn.disabled=true;m.hidden=false;m.dataset.state='loading';
+ m.textContent='Preparando relatório e enviando para seu e-mail. Aguarde...';
+ try{
+  const resposta=await fetch('/api/dashboards/megavig-360/enviar-pdf-meu-email'+(document.getElementById('megavig-visao')?'?visao='+encodeURIComponent(document.getElementById('megavig-visao').value):''),{method:'POST'});
+  const dados=await resposta.json().catch(()=>({}));
+  if(!resposta.ok)throw new Error(dados.detail||dados.mensagem||'Falha HTTP '+resposta.status);
+  m.dataset.state='success';m.textContent='Relatório enviado com sucesso! Verifique seu e-mail.';
+  m._hideTimer=setTimeout(()=>{m.hidden=true;m._hideTimer=null;},5000);
+ }catch(erro){m.dataset.state='error';m.textContent='Erro: '+(erro.message||String(erro));}
+ finally{btn.disabled=false;}
+});
+(function(){const n=document.getElementById('megavig360-dados'),root=document.getElementById('content');let d={};if(n){try{d=JSON.parse(n.textContent)}catch(e){}}const get=k=>Object.prototype.hasOwnProperty.call(d,k)&&d[k]!==null&&Number.isFinite(Number(d[k]))?Number(d[k]):null;const fmt=v=>v===null?'—':v.toLocaleString('pt-BR',{maximumFractionDigits:1});const metric=(label,key,note='',accent='#2b85b9')=>{const v=get(key);return `<div class="metric" style="--accent:${accent}"><div class="label">${label}</div><div class="value ${v===null?'missing':''}">${fmt(v)}</div><div class="note">${v===null?'Aguardando integração':note}</div></div>`};const section=(num,title,subtitle,body)=>`<section class="section"><div class="sectionhead"><h2>${title}</h2><span class="desc">${subtitle}</span></div>${body}</section>`;const grid=(items,cl='')=>`<div class="metrics ${cl}">${items.join('')}</div>`;const line=(label,key)=>`<div class="status"><span>${label}</span><b>${fmt(get(key))}</b></div>`;
+root.innerHTML=section('01','Quadro de colaboradores','Estrutura organizacional',grid([metric('Colaboradores ativos','funcionarios','Funcionários ativos'),metric('Departamentos','departamentos','Departamentos cadastrados','#1d9b91'),metric('Centros de custo','centros_custo','Centros de custo','#9c78c8'),metric('Gestores','gestores','Gestores ativos','#d19a45')]))+section('02','Políticas e documentos','Conteúdo corporativo publicado',grid([metric('Departamentos','departamentos','Total cadastrado'),metric('Documentos disponíveis','documentos_disponiveis','Arquivos cadastrados','#1d9b91'),metric('Visualizações de PDFs','documentos_visualizacoes','Aberturas registradas','#9c78c8'),metric('Downloads','documentos_downloads','Downloads registrados','#d19a45')],'two'))+section('03','Engajamento','Interações registradas nos módulos',grid([metric('Logins na Intranet (ano)','intranet_logins_ano','Logins bem-sucedidos'),metric('Índice de acesso (%)','intranet_indice_acesso','Ativos distintos com login no ano','#1d9b91')],'two')+grid([metric('Acessos à galeria','galeria_acessos','Entradas no módulo'),metric('Acessos a vídeos','videos_acessos','Entradas no módulo','#1d9b91')],'two')+grid([metric('Leituras pendentes','avisos_pendentes','Entregas ainda não lidas','#d19a45'),metric('Confirmações de ciência','comunicados_confirmacoes','Confirmações por destinatário','#1d9b91')],'two'))+section('05','Treinamentos','EAD e presencial · visão corporativa',`<div class="trein-modalidades"><div class="trein-col"><h3>EAD</h3>`+grid([metric('Publicados','treinamentos_publicados_ead'),metric('Inscrições','trein_ead_inscricoes','#1d9b91'),metric('Feitos','trein_ead_concluidos','#9c78c8'),metric('Em andamento','trein_ead_andamento','#d19a45'),metric('Horas EAD','trein_ead_horas_gerais','#2b85b9')],'trein-metrics')+`</div><div class="trein-col"><h3>Presencial</h3>`+grid([metric('Publicados','treinamentos_publicados_presencial'),metric('Convocados','trein_presencial_inscricoes','#1d9b91'),metric('Feitos','trein_presencial_concluidos','#9c78c8'),metric('Em andamento','trein_presencial_andamento','#d19a45'),metric('Horas presenciais','trein_presencial_horas_gerais','#2b85b9')],'trein-metrics')+`</div></div>`)+section('04','Pesquisas','Andamento e alcance por departamento',grid([metric('Publicadas / abertas','pesquisas_andamento','Podem já ter respostas'),metric('Encerradas','pesquisas_encerradas','Pesquisas finalizadas','#9c78c8'),metric('Respostas recebidas','pesquisas_participacoes','Participações agregadas','#1d9b91'),metric('Pesquisas com respostas','pesquisas_com_respostas','Pesquisas distintas respondidas','#d19a45')],'three'))+section('06','Avaliações de desempenho','Participações concluídas/pendentes; modalidades por ciclo',grid([metric('Avaliações realizadas','avaliacoes_concluidas','Registros concluídos'),metric('Pendentes / em andamento','avaliacoes_andamento','Não concluídas','#d19a45'),metric('Resultado médio (%)','avaliacoes_media','Competências e metas normalizadas','#1d9b91'),metric('Esperado médio (%)','avaliacoes_meta_esperada','Competências e metas normalizadas','#9c78c8')]));
+// Anéis concêntricos: externo esperado (azul), interno obtido (roxo), escala 0–100.
+const avalCard=[...root.querySelectorAll('.section')].find(x=>x.querySelector('h2')?.textContent.includes('Avaliações de desempenho'));
+if(avalCard){
+ const circle=(v,r,color)=>{const circ=2*Math.PI*r;return `<circle cx="100" cy="100" r="${r}" fill="none" stroke="${color}" stroke-width="12" stroke-linecap="round" stroke-dasharray="${circ}" stroke-dashoffset="${circ*(1-Math.max(0,Math.min(100,v))/100)}" transform="rotate(-90 100 100)"/>`};
+ const obt=get('avaliacoes_media'),esp=get('avaliacoes_meta_esperada');
+ const detail=[['Competências (1–5)','aval_comp_obtida','aval_comp_esperada'],['Metas numéricas (0/1)','aval_metas_obtida','aval_metas_esperada']].map(([label,k1,k2])=>{const a=get(k1),b=get(k2);return `<div class="aval-detail"><span>${label}</span><strong>${a===null?'—':fmt(a)+'%'} / ${b===null?'—':fmt(b)+'%'}</strong></div>`}).join('');
+ const panel=document.createElement('div');panel.className='aval-rings';
+ panel.innerHTML=`<div class="aval-rings-title">Desempenho consolidado · Obtido × Esperado</div><div class="aval-rings-body"><svg viewBox="0 0 200 200" role="img" aria-label="Anéis de resultado médio obtido e esperado, em percentual"><circle cx="100" cy="100" r="77" fill="none" stroke="#e4edf5" stroke-width="12"/><circle cx="100" cy="100" r="55" fill="none" stroke="#e4edf5" stroke-width="12"/>${esp!==null?circle(esp,77,'#1286b4'):''}${obt!==null?circle(obt,55,'#b28bd5'):''}<text x="100" y="96" text-anchor="middle" font-size="23" font-weight="800" fill="#163d63">${obt===null?'—':fmt(obt)+'%'}</text><text x="100" y="114" text-anchor="middle" font-size="10" fill="#627a90">obtido</text></svg><div class="aval-rings-legend"><div><span class="aval-dot" style="background:#b28bd5"></span>Obtido: <b>${obt===null?'—':fmt(obt)+'%'}</b></div><div><span class="aval-dot" style="background:#1286b4"></span>Esperado: <b>${esp===null?'—':fmt(esp)+'%'}</b></div>${detail}<div class="aval-method">Competências: nota ÷ 5. Metas: 100% se atingidas, 0% se não. Somente avaliações consolidadas.</div></div></div>`;
+ avalCard.appendChild(panel);
+}
+const mensal=Array.isArray(d.colaboradores_mensal)?d.colaboradores_mensal:[];
+const nomes=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+const serie=nomes.map((nome,i)=>({nome,...(mensal.find(x=>Number(x.mes)===i+1)||{})}));
+const existentes=serie.filter(x=>typeof x.ativos==='number'&&Number.isFinite(x.ativos));
+const max=Math.max(1,...existentes.map(x=>x.ativos));
+const maxEixo=Math.max(5,Math.ceil(max/5)*5);
+const y=v=>148-(v/maxEixo)*117;
+const barras=serie.map((x,i)=>{
+  const cx=63+i*68;
+  const valido=typeof x.ativos==='number'&&Number.isFinite(x.ativos);
+  const altura=valido?148-y(x.ativos):0;
+  return `${valido?`<rect x="${cx-17}" y="${y(x.ativos)}" width="34" height="${Math.max(0,altura)}" rx="3" fill="${i===mensal.length-1?'#0d6c98':'#2888bc'}"><title>${x.nome}: ${x.ativos} colaboradores ativos em ${x.data||''}</title></rect><text x="${cx}" y="${Math.max(13,y(x.ativos)-6)}" font-size="15" font-weight="700" fill="#173f68" text-anchor="middle">${x.ativos}</text>`:''}<text x="${cx}" y="169" text-anchor="middle" font-size="12" fill="#385875">${x.nome}</text>`;
+}).join('');
+const linhas=[0,1,2,3,4].map(i=>{const valor=Math.round(maxEixo*i/4),yy=y(valor);return `<line x1="45" y1="${yy}" x2="840" y2="${yy}" stroke="#e3eaf1"/><text x="38" y="${yy+4}" text-anchor="end" font-size="11" fill="#6a7d91">${valor}</text>`}).join('');
+const grafico=existentes.length?`<div class="historico-info">Colaboradores ativos por mês · 2026</div><div class="chart-wrap"><svg role="img" aria-label="Gráfico de colunas de colaboradores ativos por mês" viewBox="0 0 860 182" xmlns="http://www.w3.org/2000/svg">${linhas}${barras}</svg></div><div class="chart-note">Fechamento mensal; mês atual até hoje. Sem projeção futura.</div>`:'<div class="historico-info">Série mensal ainda não disponível na API. Atualize o Python para a V13.</div>';
+// Pesquisas compartilha o mesmo card de Políticas e documentos (sem card independente).
+const cardsPainel=[...root.querySelectorAll(':scope > .section')];
+const cardDocumentos=cardsPainel[1];
+const cardPesquisas=cardsPainel[4];
+if(cardDocumentos && cardPesquisas){
+  const bloco=document.createElement('div');
+  bloco.className='pesquisas-no-card';
+  bloco.innerHTML='<h3>Pesquisas</h3>';
+  const indicadores=cardPesquisas.querySelector('.metrics');
+  if(indicadores) bloco.appendChild(indicadores);
+  cardDocumentos.appendChild(bloco);
+  cardPesquisas.remove();
+}
+const primeiroCard=root.querySelector('.section');
+if(primeiroCard){
+ const area=document.createElement('div');
+ area.className='colab-historico';
+ area.innerHTML=grafico;
+ primeiroCard.appendChild(area);
+}
+
+// Logins mensais: apenas eventos de autenticação bem-sucedidos, sem estimativas.
+const loginsMes=Array.isArray(d.intranet_logins_mensal)?d.intranet_logins_mensal:[];
+const serieLogins=nomes.map((nome,i)=>({nome,...(loginsMes.find(x=>Number(x.mes)===i+1)||{})}));
+const validosLogins=serieLogins.filter(x=>typeof x.logins==='number'&&Number.isFinite(x.logins));
+const maiorLogin=Math.max(1,...validosLogins.map(x=>x.logins));
+const eixoLogin=Math.max(4,Math.ceil(maiorLogin/4)*4);
+const posYLogin=v=>148-(v/eixoLogin)*117;
+const pontosLogin=serieLogins.map((x,i)=>({x:63+i*68, y:posYLogin(x.logins), v:x.logins, ok:typeof x.logins==='number'&&Number.isFinite(x.logins), nome:x.nome}));
+const pontosValidos=pontosLogin.filter(x=>x.ok);
+const linhaLogin=pontosValidos.length?`<polyline fill="none" stroke="#d32f2f" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" points="${pontosValidos.map(x=>`${x.x},${x.y}`).join(' ')}"/>`:'';
+const barrasLogin=linhaLogin+pontosLogin.map(x=>`${x.ok?`<circle cx="${x.x}" cy="${x.y}" r="5" fill="#d32f2f"><title>${x.nome}: ${x.v} logins</title></circle>`:''}<text x="${x.x}" y="169" text-anchor="middle" font-size="12" fill="#385875">${x.nome}</text>`).join('');
+const linhasLogin=[0,1,2,3,4].map(i=>{const v=Math.round(eixoLogin*i/4),yy=posYLogin(v);return `<line x1="45" y1="${yy}" x2="840" y2="${yy}" stroke="#e3eaf1"/><text x="38" y="${yy+4}" text-anchor="end" font-size="11" fill="#6a7d91">${v}</text>`}).join('');
+const cardEng=root.querySelectorAll('.section')[2];
+if(cardEng){
+ const area=document.createElement('div');area.className='eng-historico';
+ area.innerHTML=validosLogins.length?`<div class="historico-info">Acessos à Intranet por mês · ${new Date().getFullYear()}</div><div class="chart-wrap"><svg role="img" aria-label="Linha vermelha de logins mensais na Intranet" viewBox="0 0 860 182" xmlns="http://www.w3.org/2000/svg">${linhasLogin}${barrasLogin}</svg></div><div class="chart-note">Logins bem-sucedidos; mês atual até hoje. Índice: funcionários ativos distintos com login no ano ÷ funcionários ativos.</div>`:'<div class="historico-info">Série de logins ainda não disponível na API V15.</div>';
+ cardEng.appendChild(area);
+}
+
+
+// Horas dos cursos com conclusão no mês, contando cada curso uma vez por mês.
+const cardTrein=[...root.querySelectorAll('.section')].find(el=>el.querySelector('h2')?.textContent.trim()==='Treinamentos');
+if(cardTrein){
+ const horasMes=Array.isArray(d.treinamentos_horas_mensal)?d.treinamentos_horas_mensal:[];
+ const serieHoras=nomes.map((nome,i)=>({nome,...(horasMes.find(x=>Number(x.mes)===i+1)||{})}));
+ const validas=serieHoras.filter(x=>typeof x.horas==='number'&&Number.isFinite(x.horas));
+ const area=document.createElement('div');area.className='trein-historico';
+ if(validas.length){
+  const maxHoras=Math.max(1,...validas.map(x=>x.horas));
+  const escala=Math.max(1,Math.ceil(maxHoras*10)/10);
+  const barraX=40, barraMax=270, topo=10, passo=19;
+  const linhas=[0,0.25,0.5,0.75,1].map(f=>{const x=barraX+barraMax*f;return `<line x1="${x}" y1="8" x2="${x}" y2="240" stroke="#e3eaf1" stroke-width="1"/><text x="${x}" y="255" font-size="10" fill="#6a7d91" text-anchor="middle">${fmt(escala*f)}</text>`}).join('');
+  const barras=serieHoras.map((x,i)=>{const y=topo+i*passo,ok=typeof x.horas==='number'&&Number.isFinite(x.horas);const largura=ok?Math.max(0,barraMax*x.horas/escala):0;return `<text x="3" y="${y+11}" font-size="11" fill="#385875">${x.nome}</text>${ok?`<rect x="${barraX}" y="${y+1}" width="${largura}" height="12" rx="2" fill="#17965b"><title>${x.nome}: ${fmt(x.horas)} horas realizadas</title></rect>`:''}`}).join('');
+  area.innerHTML=`<div class="historico-info">Horas de treinamento realizadas</div><div class="chart-wrap"><svg viewBox="0 0 320 263" role="img" aria-label="Barras horizontais de horas de treinamento realizadas por mês">${linhas}${barras}</svg></div>`;
+ }else area.innerHTML='<div class="historico-info">Histórico mensal de horas ainda não disponível. Verifique a API e as datas de conclusão.</div>';
+ cardTrein.appendChild(area);
+}
+
+})();
+
+// Megavig Pulse: central extensivel. Configuracoes persistidas via API.
+(function(){
+ const root=document.getElementById('content');if(!root)return;
+ const nivel=Number(window.MEGAVIG_PULSE_NIVEL);
+ if(![1,2,3].includes(nivel))return;
+ const safe=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ if(nivel===1){const card=document.createElement('section');card.className='section pulse-demo pulse-empresa-logo';card.innerHTML='<div class="pulse-logo-holder"></div>';const logo=window.MEGAVIG_PULSE_LOGO;if(logo){const img=document.createElement('img');img.src=logo;img.alt='Logotipo oficial da Megavig';card.querySelector('.pulse-logo-holder').appendChild(img);}root.appendChild(card);return;}
+ // O iframe isolado usa o fetch autenticado da Bridge da Intranet; nunca recebe o token.
+ async function api(path,method='GET',data){const r=await fetch('/api/pulse'+path,{method,headers:data?{'Content-Type':'application/json'}:{},...(data?{body:JSON.stringify(data)}:{})});let x={};try{x=await r.json()}catch(e){}if(!r.ok)throw Error(x.detail||'HTTP '+r.status);return x;}
+ const panel=document.createElement('section');panel.className='section pulse-demo';panel.innerHTML='<div class="pulse-header"><div class="pulse-brand"><div class="pulse-logo">◉</div><div class="pulse-name">Megavig Pulse <span class="pulse-ai-label">(minhas automações)</span></div></div></div><div id="pulse-subscriptions" class="pulse-subscriptions"></div><div class="pulse-bottom"><button type="button" class="pulse-config-btn" id="pulse-open">⚙ Configurar Pulse</button></div>';root.appendChild(panel);
+ const list=panel.querySelector('#pulse-subscriptions');let itens=[],catalogo=[],editando=null;
+ const modal=document.createElement('div');modal.className='pulse-modal';modal.hidden=true;
+ modal.innerHTML='<div class="pulse-dialog" role="dialog" aria-modal="true" aria-labelledby="pulse-title"><h2 id="pulse-title">Configurar Megavig Pulse</h2><p>Relatorios e alertas permitidos para seu perfil</p><div class="pulse-fields"><label>Tipo de automação<select id="pulse-type"></select></label><label>Relatório ou alerta<select id="pulse-kind"></select></label><label>Frequência<select id="pulse-freq"><option value="DIARIO">Todos os dias</option><option value="UTEIS">Dias úteis</option><option value="SEMANAL">Semanal</option><option value="MENSAL">Mensal</option><option value="EVENTO">Quando ocorrer evento</option></select></label><label>Horário<input id="pulse-hour" type="time" value="08:00"></label><label>Canal<select id="pulse-channel"><option value="EMAIL">E-mail corporativo</option><option value="INTRANET">Notificação na Intranet</option></select></label></div><p class="pulse-preview" id="pulse-notice">Agendamentos são armazenados no servidor. Após salvar, clique em Ativar. Envios dependem do motor de execução habilitado no servidor. Apenas o Megavig 360° por e-mail está disponível nesta fase.</p><div class="pulse-actions"><button type="button" id="pulse-close">Cancelar</button><button type="button" class="pulse-primary" id="pulse-save">Salvar configuração</button></div></div>';document.body.appendChild(modal);
+ const tipo=modal.querySelector('#pulse-type'),kind=modal.querySelector('#pulse-kind');
+ const render=()=>{
+   const abertos=new Set([...list.querySelectorAll('details.pulse-group[open]')].map(el=>el.dataset.grupo));
+   const posicaoRolagem=list.scrollTop;
+   if(!itens.length){list.innerHTML='<div class="pulse-empty">Nenhuma automação cadastrada.</div>';return;}
+   const nomesTipo={DASHBOARD:'Dashboards',AVALIACAO:'Avaliações',TREINAMENTO:'Treinamentos',RH:'RH',ALERTA:'Alertas',RADAR:'Radar Megavig'};
+   const grupos=new Map();
+   for(const x of itens){const chave=x.tipo||String(x.codigo||'').split(':')[0]||'OUTROS';if(!grupos.has(chave))grupos.set(chave,[]);grupos.get(chave).push(x);}
+   list.innerHTML=[...grupos].map(([chave,registros])=>{
+     const linhas=registros.map(x=>{
+       const statusNome=({RASCUNHO:'Rascunho',PAUSADA:'Pausada',ATIVA:'Ativa'})[x.status]||x.status;
+       const frequenciaNome=({DIARIO:'Diário',UTEIS:'Dias úteis',SEMANAL:'Semanal',MENSAL:'Mensal',EVENTO:'Por evento'})[x.frequencia]||x.frequencia;
+       const canalNome=({EMAIL:'E-mail',INTRANET:'Intranet'})[x.canal]||x.canal;
+       return '<div class="pulse-subscription"><div class="pulse-subscription-info"><strong title="'+safe(x.nome)+'">'+safe(x.nome)+'</strong><span class="pulse-row-meta">'+safe(frequenciaNome)+' · '+safe(x.horario||'Por evento')+' · '+safe(canalNome)+'</span><span class="pulse-status pulse-status-'+safe(x.status)+'">'+safe(statusNome)+'</span></div><div class="pulse-subscription-actions">'+(x.status==='RASCUNHO'||x.status==='PAUSADA'?'<button type="button" class="pulse-activate" data-id="'+safe(x.id)+'">Ativar</button>':x.status==='ATIVA'?'<button type="button" class="pulse-pause" data-id="'+safe(x.id)+'">Pausar</button>':'')+'<button type="button" class="pulse-edit" data-id="'+safe(x.id)+'">Editar</button><button type="button" class="pulse-remove" data-id="'+safe(x.id)+'" aria-label="Excluir">×</button></div></div>';
+     }).join('');
+     return '<details class="pulse-group" data-grupo="'+safe(chave)+'"><summary class="pulse-group-title"><span class="pulse-expand-icon" aria-hidden="true">▸</span><b>'+safe(nomesTipo[chave]||chave)+'</b> <span>'+registros.length+'</span></summary><div class="pulse-group-rows">'+linhas+'</div></details>';
+   }).join('')+'<details class="pulse-group pulse-demo-only" data-grupo="RADAR_PREVIA"><summary class="pulse-group-title"><span class="pulse-expand-icon" aria-hidden="true">▸</span><b>Radar Megavig</b> <span class="pulse-preview-tag">Prévia visual</span></summary><div class="pulse-group-rows"><div class="pulse-subscription"><div class="pulse-subscription-info"><strong>Notícias e redes sociais</strong><span class="pulse-row-meta">Diário · 15:00 · E-mail</span><span class="pulse-status pulse-status-RASCUNHO">Exemplo</span></div><div class="pulse-subscription-actions"><span class="pulse-preview-tag">Não configurado</span></div></div></div></details>';
+   list.querySelectorAll('details.pulse-group').forEach(el=>{if(abertos.has(el.dataset.grupo))el.open=true;});
+   list.scrollTop=posicaoRolagem;
+ };
+ const load=async()=>{try{const [c,a]=await Promise.all([api('/catalogo'),api('/automacoes')]);catalogo=c.itens||[];itens=a.itens||[];render();}catch(e){list.textContent='Pulse indisponível: '+e.message;}};
+ const updateKinds=()=>{const opts=catalogo.filter(x=>x.tipo===tipo.value);kind.innerHTML=opts.map(x=>'<option value="'+safe(x.codigo)+'">'+safe(x.nome)+'</option>').join('');};
+ list.addEventListener('click',async ev=>{const b=ev.target.closest('.pulse-activate,.pulse-pause');if(!b)return;b.disabled=true;try{await api('/automacoes/'+b.dataset.id+(b.classList.contains('pulse-activate')?'/ativar':'/pausar'),'POST');await load();}catch(e){alert(e.message)}finally{b.disabled=false}});
+ panel.querySelector('#pulse-open').addEventListener('click',async()=>{editando=null;modal.querySelector('#pulse-title').textContent='Configurar Megavig Pulse';modal.querySelector('#pulse-save').textContent='Salvar configuração';await load();if(!catalogo.length){alert('Nenhuma automação disponível para seu usuário.');return;}tipo.innerHTML=[...new Set(catalogo.map(x=>x.tipo))].map(x=>'<option value="'+safe(x)+'">'+safe(({DASHBOARD:'Dashboards',AVALIACAO:'Avaliações',TREINAMENTO:'Treinamentos',RH:'Funcionários e RH',ALERTA:'Alertas',RADAR:'Radar Megavig'})[x]||x)+'</option>').join('');updateKinds();modal.hidden=false;tipo.focus();});
+ list.addEventListener('click',async e=>{const b=e.target.closest('.pulse-edit[data-id]');if(!b)return;
+   const x=itens.find(v=>String(v.id)===String(b.dataset.id));if(!x)return;
+   editando=x.id;
+   tipo.innerHTML=[...new Set(catalogo.map(v=>v.tipo))].map(v=>'<option value="'+safe(v)+'">'+safe(({DASHBOARD:'Dashboards',AVALIACAO:'Avaliações',TREINAMENTO:'Treinamentos',RH:'Funcionários e RH',ALERTA:'Alertas',RADAR:'Radar Megavig'})[v]||v)+'</option>').join('');
+   tipo.value=x.tipo||'DASHBOARD';updateKinds();kind.value=x.codigo;
+   modal.querySelector('#pulse-freq').value=x.frequencia;
+   modal.querySelector('#pulse-hour').value=x.horario||'08:00';
+   modal.querySelector('#pulse-channel').value=x.canal;
+   modal.querySelector('#pulse-title').textContent='Editar agendamento';
+   modal.querySelector('#pulse-save').textContent='Salvar alterações';
+   modal.querySelector('#pulse-notice').textContent='Ao salvar uma edição, o agendamento fica pausado. Revise e clique em Ativar para retomar os envios.';
+   modal.hidden=false;tipo.focus();
+ });
+ tipo.addEventListener('change',updateKinds);
+ modal.querySelector('#pulse-close').addEventListener('click',()=>modal.hidden=true);
+ modal.querySelector('#pulse-save').addEventListener('click',async()=>{const b=modal.querySelector('#pulse-save');b.disabled=true;try{await api(editando?'/automacoes/'+editando:'/automacoes',editando?'PUT':'POST',{codigo:kind.value,frequencia:modal.querySelector('#pulse-freq').value,horario:modal.querySelector('#pulse-hour').value,canal:modal.querySelector('#pulse-channel').value});const foiEdicao=!!editando;editando=null;modal.hidden=true;await load();if(foiEdicao)alert('Alterações salvas. Clique em Ativar para retomar os envios.');}catch(e){alert(e.message)}finally{b.disabled=false}});
+   const confirmar=document.createElement('div');confirmar.className='pulse-confirm';confirmar.hidden=true;
+  confirmar.innerHTML='<div class="pulse-confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="pulse-confirm-title"><h3 id="pulse-confirm-title">Excluir agendamento?</h3><p id="pulse-confirm-text"></p><div class="pulse-confirm-actions"><button type="button" id="pulse-confirm-cancel">Cancelar</button><button type="button" id="pulse-confirm-delete">Excluir</button></div></div>';
+  document.body.appendChild(confirmar);let excluirId=null;
+  const fecharConfirmacao=()=>{confirmar.hidden=true;excluirId=null;};
+  confirmar.querySelector('#pulse-confirm-cancel').addEventListener('click',fecharConfirmacao);
+  confirmar.addEventListener('click',e=>{if(e.target===confirmar)fecharConfirmacao();});
+  list.addEventListener('click',e=>{const b=e.target.closest('.pulse-remove[data-id]');if(!b)return;const x=itens.find(v=>String(v.id)===String(b.dataset.id));excluirId=b.dataset.id;confirmar.querySelector('#pulse-confirm-text').textContent='Deseja excluir '+(x?.nome||'esta automação')+'? Esta ação não pode ser desfeita.';confirmar.hidden=false;confirmar.querySelector('#pulse-confirm-cancel').focus();});
+  confirmar.querySelector('#pulse-confirm-delete').addEventListener('click',async()=>{if(!excluirId)return;const id=excluirId,b=confirmar.querySelector('#pulse-confirm-delete');b.disabled=true;try{await api('/automacoes/'+encodeURIComponent(id),'DELETE');fecharConfirmacao();await load();informar('Agendamento excluído.');}catch(e){informar('Não foi possível excluir: '+e.message,true);fecharConfirmacao();}finally{b.disabled=false;}});
+ modal.addEventListener('click',e=>{if(e.target===modal)modal.hidden=true});document.addEventListener('keydown',e=>{if(e.key==='Escape'){modal.hidden=true;fecharConfirmacao();}});load();
+})();
+</script><script id="pulse-sincronizar-altura-v6">
+(function(){
+  const painel=document.querySelector('#content > .pulse-demo:not(.pulse-empresa-logo)');
+  const aval=[...document.querySelectorAll('#content > .section')].find(el=>el!==painel&&el.querySelector('.sectionhead h2')?.textContent.includes('Avaliações de desempenho'));
+  if(!painel||!aval)return;
+  const ajustar=()=>{
+    if(window.matchMedia('(min-width:1151px)').matches){
+      const altura=Math.max(150,Math.ceil(aval.getBoundingClientRect().height));
+      painel.style.setProperty('height',altura+'px','important');
+      painel.style.setProperty('max-height',altura+'px','important');
+    }else{
+      painel.style.removeProperty('height');
+      painel.style.removeProperty('max-height');
+    }
+  };
+  ajustar();
+  if(typeof ResizeObserver!=='undefined')new ResizeObserver(ajustar).observe(aval);
+  window.addEventListener('resize',ajustar);
+})();
+</script><script id="pulse-rolagem-funcional-v8">
+(function(){
+  const lista=document.getElementById('pulse-subscriptions');
+  if(!lista)return;
+  lista.setAttribute('tabindex','0');
+  lista.setAttribute('aria-label','Agendamentos Megavig Pulse: use a roda do mouse ou as setas para percorrer');
+  lista.addEventListener('wheel',function(e){
+    if(this.scrollHeight<=this.clientHeight+1)return;
+    const passo=e.deltaMode===1?e.deltaY*16:e.deltaMode===2?e.deltaY*this.clientHeight:e.deltaY;
+    const antes=this.scrollTop;
+    this.scrollTop+=passo;
+    if(this.scrollTop!==antes)e.preventDefault();
+  },{passive:false});
+  lista.addEventListener('keydown',function(e){
+    const passo=e.key==='ArrowDown'?36:e.key==='ArrowUp'?-36:e.key==='PageDown'?this.clientHeight*.8:e.key==='PageUp'?-this.clientHeight*.8:e.key==='Home'?-this.scrollHeight:e.key==='End'?this.scrollHeight:0;
+    if(passo){this.scrollTop+=passo;e.preventDefault();}
+  });
+})();
+</script></body></html>

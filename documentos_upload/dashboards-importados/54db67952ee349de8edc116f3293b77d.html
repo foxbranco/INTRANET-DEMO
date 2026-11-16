@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard de Teste — Indicadores de Usuários</title>
+<style>
+:root{font-family:Inter,Segoe UI,Arial,sans-serif;color:#17243a;background:#f3f6fb}
+*{box-sizing:border-box}body{margin:0;padding:28px}
+.wrap{max-width:1180px;margin:auto}
+header{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:24px}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.12em;color:#55708f;text-transform:uppercase}
+h1{font-size:27px;margin:6px 0;color:#172b4d}
+.sub{color:#718096;font-size:14px}
+.actions{display:flex;gap:10px;align-items:center}
+button{border:0;border-radius:9px;padding:11px 16px;background:#1d4e89;color:#fff;font-weight:650;cursor:pointer}
+button:hover{background:#163d6c}
+.status{font-size:12px;color:#66758a}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.card{background:#fff;border:1px solid #e4eaf2;border-radius:15px;padding:22px;box-shadow:0 5px 18px rgba(27,48,78,.05)}
+.card-top{display:flex;justify-content:space-between;align-items:center}
+.label{font-size:13px;color:#64748b;font-weight:650}
+.icon{width:40px;height:40px;border-radius:11px;background:#eaf1fb;display:grid;place-items:center;color:#1d4e89;font-size:19px}
+.value{font-size:36px;font-weight:750;letter-spacing:-1px;margin:17px 0 5px;color:#172b4d}
+.note{font-size:12px;color:#8794a7}
+.panel{margin-top:20px;background:#fff;border:1px solid #e4eaf2;border-radius:15px;padding:22px}
+.panel h2{font-size:17px;margin:0 0 14px;color:#213653}
+table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:12px 10px;border-bottom:1px solid #edf1f6;font-size:13px}
+th{color:#718096;font-weight:650;background:#f8fafd}
+td:last-child,th:last-child{text-align:right}
+.empty{padding:24px;text-align:center;color:#718096;font-size:13px}
+.foot{margin-top:18px;color:#8794a7;font-size:11px}
+@media(max-width:720px){body{padding:16px}.grid{grid-template-columns:1fr}h1{font-size:23px}.value{font-size:32px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+ <div>
+  <div class="eyebrow">Intranet V12 · Dashboards</div>
+  <h1>Indicadores de Usuários</h1>
+  <div class="sub">Resumo de funcionários, cargos e departamentos cadastrados</div>
+ </div>
+ <div class="actions">
+  <span class="status" id="status">Aguardando carregamento</span>
+  <button type="button" onclick="carregar()">Atualizar dados</button>
+ </div>
+</header>
+
+<section class="grid">
+ <article class="card"><div class="card-top"><span class="label">Funcionários ativos</span><span class="icon">♙</span></div><div class="value" id="funcionarios">—</div><div class="note">Total de usuários ativos</div></article>
+ <article class="card"><div class="card-top"><span class="label">Cargos</span><span class="icon">▤</span></div><div class="value" id="cargos">—</div><div class="note">Cargos distintos cadastrados</div></article>
+ <article class="card"><div class="card-top"><span class="label">Departamentos</span><span class="icon">▦</span></div><div class="value" id="departamentos">—</div><div class="note">Departamentos distintos cadastrados</div></article>
+</section>
+
+<section class="panel">
+ <h2>Distribuição por departamento</h2>
+ <div id="tabela"><div class="empty">Os dados serão exibidos após a conexão com a API da Intranet.</div></div>
+</section>
+<div class="foot">Dashboard de demonstração · Dados carregados exclusivamente da API autenticada da Intranet V12.</div>
+</div>
+<script>
+const fmt = n => Number(n || 0).toLocaleString('pt-BR');
+function tokenAtual(){
+  return sessionStorage.getItem('intranet_token') ||
+         sessionStorage.getItem('token') || '';
+}
+async function carregar(){
+  const status=document.getElementById('status');
+  status.textContent='Carregando...';
+  const token=tokenAtual();
+  if(!token){
+    status.textContent='Faça login na Intranet para carregar os dados';
+    return;
+  }
+  try{
+    const resp=await fetch('/api/dashboards/usuarios/resumo',{
+      headers:{'Authorization':'Bearer '+token,'Accept':'application/json'},
+      cache:'no-store'
+    });
+    if(!resp.ok){
+      if(resp.status===401) throw new Error('Sessão expirada ou não autorizada (HTTP 401).');
+      if(resp.status===404) throw new Error('API de resumo ainda não encontrada (HTTP 404).');
+      throw new Error('Falha ao consultar a API (HTTP '+resp.status+').');
+    }
+    const d=await resp.json();
+    document.getElementById('funcionarios').textContent=fmt(d.funcionarios_ativos ?? d.total_funcionarios ?? d.funcionarios);
+    document.getElementById('cargos').textContent=fmt(d.total_cargos ?? d.cargos);
+    document.getElementById('departamentos').textContent=fmt(d.total_departamentos ?? d.departamentos);
+    const linhas=d.departamentos_detalhe || d.distribuicao_departamentos || [];
+    const alvo=document.getElementById('tabela');
+    if(Array.isArray(linhas) && linhas.length){
+      alvo.innerHTML='<table><thead><tr><th>Departamento</th><th>Funcionários</th></tr></thead><tbody>'+
+        linhas.map(x=>'<tr><td>'+esc(x.departamento ?? x.nome ?? 'Não informado')+'</td><td>'+fmt(x.quantidade ?? x.total)+'</td></tr>').join('')+
+        '</tbody></table>';
+    }else{
+      alvo.innerHTML='<div class="empty">A API respondeu, mas não retornou a distribuição por departamento.</div>';
+    }
+    status.textContent='Atualizado em '+new Date().toLocaleTimeString('pt-BR');
+  }catch(e){
+    status.textContent=e.message;
+    document.getElementById('tabela').innerHTML='<div class="empty">'+esc(e.message)+'</div>';
+  }
+}
+function esc(v){return String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+window.addEventListener('load',carregar);
+</script>
+</body>
+</html>

@@ -1,0 +1,568 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Resultados das Pesquisas</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f3f6fb;color:#172b4d;font-family:Arial,sans-serif}
+main{padding:20px;max-width:1600px;margin:auto}
+header{background:#102b52;color:white;padding:22px;border-radius:12px;margin-bottom:18px}
+h1{font-size:23px;margin:0 0 5px}
+header p{margin:0;color:#d5e2f4;font-size:13px}
+.filtros,.cartao{background:white;border:1px solid #dfe6f0;border-radius:10px;padding:17px}
+.filtros{margin-bottom:16px}
+select{padding:11px;width:100%;max-width:600px;border:1px solid #cbd5e1;border-radius:7px}
+.indicadores{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px}
+.numero{font-size:30px;font-weight:bold;color:#123c72}
+.rotulo{font-size:13px;color:#64748b}
+.perguntas{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.cartao h3{font-size:16px;margin:0 0 12px}
+.linha{margin:13px 0}
+.linha-topo{display:flex;justify-content:space-between;gap:10px;font-size:13px;margin-bottom:5px}
+.trilho{height:12px;background:#e8eef6;border-radius:20px;overflow:hidden}
+.barra{height:100%;background:#2877c7;border-radius:20px}
+.media{font-size:27px;font-weight:bold;color:#1764a8;margin-bottom:12px}
+.aviso{background:#fff8e8;border:1px solid #f0d89c;padding:20px;border-radius:10px}
+.vazio{padding:25px;text-align:center;color:#64748b}
+@media(max-width:700px){.indicadores{grid-template-columns:1fr}.perguntas{grid-template-columns:1fr}main{padding:10px}}
+</style>
+<style id="layout-pesquisas-v12">
+main {
+  width: 100% !important;
+  max-width: none !important;
+  padding: 8px 12px !important;
+}
+header {
+  padding: 15px 20px !important;
+  margin-bottom: 12px !important;
+}
+h1 { font-size: 20px !important; }
+.filtros { padding: 12px 16px !important; }
+.indicadores { gap: 10px !important; margin-bottom: 12px !important; }
+.perguntas { gap: 12px !important; }
+.cartao { padding: 14px !important; }
+@media(max-width:700px) {
+  main { padding: 6px !important; }
+  .indicadores { grid-template-columns: 1fr !important; }
+  .perguntas { grid-template-columns: 1fr !important; }
+}
+</style>
+<style id="melhorias-pesquisas-v13">
+/* Layout compacto */
+main {
+  max-width: none !important;
+  width: 100% !important;
+  padding: 8px 12px !important;
+}
+header {
+  padding: 14px 18px !important;
+  margin-bottom: 10px !important;
+}
+h1 {
+  font-size: 20px !important;
+}
+.filtros {
+  padding: 12px 16px !important;
+  margin-bottom: 10px !important;
+}
+.indicadores {
+  grid-template-columns: repeat(3,minmax(0,1fr)) !important;
+  gap: 10px !important;
+  margin-bottom: 10px !important;
+}
+.perguntas {
+  display: grid !important;
+  grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+  gap: 10px !important;
+  align-items: start !important;
+}
+.cartao {
+  padding: 13px 16px !important;
+  min-height: 0 !important;
+}
+.cartao h3 {
+  font-size: 14px !important;
+  margin-bottom: 7px !important;
+}
+.numero {
+  font-size: 27px !important;
+}
+.media {
+  font-size: 23px !important;
+  margin: 8px 0 !important;
+}
+.linha {
+  margin: 9px 0 !important;
+}
+.trilho {
+  height: 10px !important;
+}
+.linha-topo {
+  margin-bottom: 4px !important;
+}
+@media(max-width:700px) {
+  main { padding: 6px !important; }
+  .indicadores {
+    grid-template-columns: 1fr !important;
+  }
+  .perguntas {
+    grid-template-columns: 1fr !important;
+  }
+}
+</style>
+<style id="cabecalho-compacto-pesquisas">
+/* Cabeçalho compacto */
+body {
+  margin: 0 !important;
+}
+header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 18px !important;
+  min-height: 0 !important;
+  padding: 10px 16px !important;
+  margin: 0 0 8px !important;
+}
+header h1 {
+  font-size: 18px !important;
+  line-height: 1.2 !important;
+  margin: 0 !important;
+}
+header p {
+  font-size: 11px !important;
+  margin: 2px 0 0 !important;
+}
+header .filtros {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  width: min(420px,45%) !important;
+  flex-shrink: 0 !important;
+}
+header .filtros label {
+  color: white !important;
+  font-size: 11px !important;
+  display: block !important;
+  margin-bottom: 3px !important;
+}
+header .filtros select {
+  width: 100% !important;
+  height: 34px !important;
+  font-size: 12px !important;
+  padding: 4px 9px !important;
+  background: white !important;
+  color: #102d55 !important;
+}
+.indicadores {
+  margin-top: 0 !important;
+  margin-bottom: 8px !important;
+}
+.indicadores > * {
+  padding: 9px 12px !important;
+}
+.perguntas {
+  gap: 8px !important;
+}
+@media(max-width:700px) {
+  header {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 8px !important;
+  }
+  header .filtros {
+    width: 100% !important;
+  }
+}
+</style>
+<style id="seletor-elegante-v12">
+header {
+  justify-content: space-between !important;
+  padding: 12px 20px !important;
+  gap: 20px !important;
+}
+header > div:first-child {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  gap: 3px !important;
+}
+header h1 {
+  font-size: 19px !important;
+  margin: 0 !important;
+}
+header p {
+  font-size: 12px !important;
+  margin: 0 !important;
+  opacity: .8;
+}
+header .filtros {
+  width: 390px !important;
+  max-width: 45% !important;
+}
+header .filtros label {
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  letter-spacing: .8px !important;
+  text-transform: uppercase !important;
+  color: #cbdcf1 !important;
+  margin-bottom: 5px !important;
+}
+header .filtros select {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  height: 38px !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 8px !important;
+  background-color: #fff !important;
+  color: #17365d !important;
+  font-family: inherit !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  padding: 0 12px !important;
+  outline: none !important;
+  box-shadow: none !important;
+  cursor: pointer !important;
+}
+header .filtros select:focus {
+  border-color: #60a5fa !important;
+  box-shadow: 0 0 0 3px rgba(96,165,250,.25) !important;
+}
+@media(max-width:700px) {
+  header .filtros {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}
+</style>
+
+<style id="formato-unico-v12">
+html body header {
+    box-sizing: border-box !important;
+    width: 100% !important;
+    height: 86px !important;
+    min-height: 86px !important;
+    max-height: 86px !important;
+    padding: 12px 24px !important;
+    margin: 0 0 10px !important;
+    background: #176044 !important;
+    border: 0 !important;
+    border-radius: 10px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 20px !important;
+}
+
+html body header h1 {
+    font-size: 23px !important;
+    line-height: 1.2 !important;
+    margin: 0 0 4px !important;
+    color: white !important;
+}
+
+html body header p {
+    font-size: 13px !important;
+    margin: 0 !important;
+    color: #e1e9f1 !important;
+}
+
+html body header > div:first-child {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    justify-content: center !important;
+    gap: 0 !important;
+}
+
+@media (max-width:700px) {
+    html body header {
+        height: auto !important;
+        min-height: 86px !important;
+        max-height: none !important;
+        padding: 12px !important;
+        flex-wrap: wrap !important;
+    }
+}
+</style>
+
+<style id="alinhamento-final-v12">
+html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+body {
+    padding: 12px 14px !important;
+}
+
+body > main,
+body > .container,
+body > .wrap,
+body > .conteudo {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+}
+
+html body header {
+    position: relative !important;
+    width: 100% !important;
+    height: 86px !important;
+    min-height: 86px !important;
+    max-height: 86px !important;
+    margin: 0 0 12px !important;
+    padding: 12px 24px !important;
+    box-sizing: border-box !important;
+    border: 0 !important;
+    border-radius: 10px !important;
+    background: #176044 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 20px !important;
+}
+
+@media(max-width:700px) {
+    body {
+        padding: 8px !important;
+    }
+    html body header {
+        height: auto !important;
+        min-height: 86px !important;
+        max-height: none !important;
+        padding: 12px !important;
+    }
+}
+</style>
+</head>
+<body>
+<main>
+<header>
+<h1>Resultados das Pesquisas</h1>
+<p>Intranet Corporativa | Indicadores e resultados consolidados</p>
+</header>
+
+<section class="filtros">
+<label for="pesquisa"><strong>Selecione uma pesquisa</strong></label>
+<div style="margin-top:9px">
+<select id="pesquisa"><option value="">Carregando pesquisas...</option></select>
+</div>
+</section>
+
+<section class="indicadores">
+<div class="cartao"><div class="rotulo">Questionários enviados</div><div class="numero" id="participantes">—</div></div>
+<div class="cartao"><div class="rotulo">Respostas registradas</div><div class="numero" id="respostas">—</div></div>
+<div class="cartao"><div class="rotulo">Situação</div><div id="situacao" style="font-size:19px;font-weight:bold;margin-top:12px">—</div></div>
+</section>
+
+<div id="mensagem"></div>
+<section id="perguntas" class="perguntas"></section>
+</main>
+
+<script>
+const API='/api/dashboards/pesquisas';
+const seletor=document.getElementById('pesquisa');
+const area=document.getElementById('perguntas');
+
+function token(){
+  return sessionStorage.getItem('intranet_token') ||
+         parent.sessionStorage.getItem('intranet_token') || '';
+}
+
+async function consultar(caminho){
+  const resposta=await fetch(API+caminho,{
+    headers:{Authorization:'Bearer '+token()}
+  });
+  if(!resposta.ok)throw Error('Erro HTTP '+resposta.status);
+  return resposta.json();
+}
+
+function elemento(tag,classe,texto){
+  const e=document.createElement(tag);
+  if(classe)e.className=classe;
+  if(texto!==undefined)e.textContent=String(texto);
+  return e;
+}
+
+function desenharDistribuicao(container, distribuicao, basePercentual){
+  const entradas = Object.entries(distribuicao || {});
+  const soma = entradas.reduce((s, [,v]) => s + Number(v), 0);
+  const total = basePercentual === undefined ? soma : basePercentual;
+
+  if (!soma || !total) {
+    container.appendChild(
+      elemento('div','vazio','Aguardando respostas')
+    );
+    return;
+  }
+
+  for (const [nome, valor] of entradas) {
+    const percentual = 100 * Number(valor) / total;
+    const linha = elemento('div','linha');
+    const topo = elemento('div','linha-topo');
+
+    topo.appendChild(elemento('span','',nome));
+    topo.appendChild(
+      elemento('strong','',
+        valor + ' (' + percentual.toFixed(1) + '%)'
+      )
+    );
+
+    const trilho = elemento('div','trilho');
+    const barra = elemento('div','barra');
+
+    barra.style.width = Math.min(100,percentual) + '%';
+
+    trilho.appendChild(barra);
+    linha.append(topo,trilho);
+    container.appendChild(linha);
+  }
+}
+
+function desenharPergunta(pergunta){
+  const cartao = elemento('article','cartao');
+
+  cartao.appendChild(
+    elemento('h3','',pergunta.enunciado)
+  );
+
+  cartao.appendChild(
+    elemento('div','rotulo',
+      pergunta.total + ' resposta(s)')
+  );
+
+  if (pergunta.tipo === 'TEXTO') {
+    cartao.appendChild(
+      elemento('div','media',pergunta.comentarios || 0)
+    );
+    cartao.appendChild(
+      elemento('div','rotulo',
+        'Comentários registrados — conteúdo não exibido')
+    );
+  }
+  else {
+    if (pergunta.tipo.startsWith('NOTA_') &&
+        pergunta.media !== null &&
+        pergunta.media !== undefined) {
+
+      const maximo = pergunta.tipo === 'NOTA_1_5' ? 5 : 10;
+
+      cartao.appendChild(
+        elemento('div','media',
+          'Média: ' + pergunta.media + ' / ' + maximo)
+      );
+    }
+
+    if (pergunta.tipo === 'MULTIPLA_ESCOLHA') {
+      desenharDistribuicao(
+        cartao,
+        pergunta.distribuicao,
+        pergunta.total
+      );
+    }
+    else {
+      desenharDistribuicao(
+        cartao,
+        pergunta.distribuicao
+      );
+    }
+  }
+
+  return cartao;
+}
+
+async function carregarResultado(id){
+  area.replaceChildren();
+  document.getElementById('mensagem').replaceChildren();
+  if(!id)return;
+
+  try{
+    const dados=await consultar('/'+encodeURIComponent(id));
+    document.getElementById('participantes').textContent=dados.participantes;
+    document.getElementById('respostas').textContent=dados.total_respostas;
+    document.getElementById('situacao').textContent=dados.status;
+
+    if(dados.protegido){
+      document.getElementById('mensagem').appendChild(
+        elemento('div','aviso',dados.mensagem)
+      );
+      return;
+    }
+
+    for(const pergunta of dados.perguntas){
+      area.appendChild(desenharPergunta(pergunta));
+    }
+
+    if(!dados.perguntas.length){
+      area.appendChild(elemento('div','vazio','Nenhuma pergunta cadastrada'));
+    }
+  }catch(erro){
+    document.getElementById('mensagem').appendChild(
+      elemento('div','aviso','Não foi possível carregar os resultados: '+erro.message)
+    );
+  }
+}
+
+async function iniciar(){
+  try{
+    const pesquisas=await consultar('/lista');
+    seletor.replaceChildren();
+    for(const p of pesquisas){
+      const opcao=document.createElement('option');
+      opcao.value=p.id;
+      opcao.textContent=p.titulo;
+      seletor.appendChild(opcao);
+    }
+    if(pesquisas.length)await carregarResultado(pesquisas[0].id);
+    else seletor.appendChild(elemento('option','','Nenhuma pesquisa cadastrada'));
+  }catch(erro){
+    seletor.replaceChildren();
+    seletor.appendChild(elemento('option','','Erro ao carregar pesquisas'));
+    document.getElementById('mensagem').appendChild(
+      elemento('div','aviso','Não foi possível acessar a API: '+erro.message)
+    );
+  }
+}
+
+seletor.addEventListener('change',()=>carregarResultado(seletor.value));
+iniciar();
+</script>
+<script id="organizar-cabecalho-pesquisas">
+(function(){
+  function organizar(){
+    const cabecalho = document.querySelector('header');
+    const filtros = document.querySelector('.filtros');
+
+    if (!cabecalho || !filtros) return;
+    if (cabecalho.contains(filtros)) return;
+
+    cabecalho.appendChild(filtros);
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', organizar);
+  } else {
+    organizar();
+  }
+})();
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
