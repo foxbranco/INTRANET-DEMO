@@ -1,0 +1,10 @@
+{
+  "name": "INTRANET-DEMO V12",
+  "forwardPorts": [8005],
+  "portsAttributes": {
+    "8005": {
+      "label": "Intranet DEMO",
+      "onAutoForward": "silent"
+    }
+  }
+}
