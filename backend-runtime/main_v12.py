@@ -2297,13 +2297,14 @@ def empresa_criar_tabela(cur):
       atualizado_em timestamptz NOT NULL DEFAULT now())""")
     cur.execute("ALTER TABLE intranet_empresa_config ADD COLUMN IF NOT EXISTS hashes jsonb NOT NULL DEFAULT '{}'::jsonb")
     cur.execute("ALTER TABLE intranet_empresa_config ADD COLUMN IF NOT EXISTS ativo boolean NOT NULL DEFAULT TRUE")
+    cur.execute("ALTER TABLE intranet_empresa_config ADD COLUMN IF NOT EXISTS url_publica text NOT NULL DEFAULT ''")
     cur.execute("INSERT INTO intranet_empresa_config(id) VALUES(1) ON CONFLICT DO NOTHING")
 
 def empresa_dados(cur):
     empresa_criar_tabela(cur)
-    cur.execute('SELECT nome,nome_curto,cnpj,telefone,endereco,cor_principal,logo,banners,ativo FROM intranet_empresa_config WHERE id=1')
+    cur.execute('SELECT nome,nome_curto,cnpj,telefone,endereco,cor_principal,logo,banners,ativo,url_publica FROM intranet_empresa_config WHERE id=1')
     r=cur.fetchone()
-    return dict(zip(('nome','nome_curto','cnpj','telefone','endereco','cor_principal','logo','banners','ativo'),r))
+    return dict(zip(('nome','nome_curto','cnpj','telefone','endereco','cor_principal','logo','banners','ativo','url_publica'),r))
 
 @app.get('/api/empresa/config')
 def empresa_consultar(authorization: Optional[str]=Header(None)):
@@ -2319,6 +2320,7 @@ class EmpresaConfigRequest(BaseModel):
     endereco: str = ''
     cor_principal: str = '#2477ca'
     ativo: bool = True
+    url_publica: str = ''
 
 @app.put('/api/empresa/config')
 def empresa_atualizar(dados: EmpresaConfigRequest, authorization: Optional[str]=Header(None)):
@@ -2330,11 +2332,24 @@ def empresa_atualizar(dados: EmpresaConfigRequest, authorization: Optional[str]=
         raise HTTPException(400,'Campo excede o tamanho permitido')
     if dados.cnpj and (len(re.sub(r'\D','',dados.cnpj))!=14): raise HTTPException(400,'CNPJ deve conter 14 dígitos')
     if not re.fullmatch(r'#[0-9a-fA-F]{6}',dados.cor_principal): raise HTTPException(400,'Cor inválida')
+    from urllib.parse import urlsplit
+    url_publica = dados.url_publica.strip().rstrip('/')
+    if url_publica:
+        try:
+            partes = urlsplit(url_publica)
+            valido = (partes.scheme == 'https' and bool(partes.hostname) and not partes.username
+                      and not partes.password and not partes.path and not partes.query
+                      and not partes.fragment and not any(c.isspace() for c in url_publica)
+                      and len(url_publica) <= 500)
+            if partes.port is not None and not (1 <= partes.port <= 65535): valido = False
+        except ValueError:
+            valido = False
+        if not valido: raise HTTPException(400, 'Informe uma URL publica HTTPS sem caminho ou parametros')
     with conectar() as conn:
         with conn.cursor() as cur:
             empresa_criar_tabela(cur)
-            cur.execute("UPDATE intranet_empresa_config SET nome=%s,nome_curto=%s,cnpj=%s,telefone=%s,endereco=%s,cor_principal=%s,ativo=%s,atualizado_em=now() WHERE id=1",
-                (nome,curto,dados.cnpj.strip(),dados.telefone.strip(),dados.endereco.strip(),dados.cor_principal,dados.ativo))
+            cur.execute("UPDATE intranet_empresa_config SET nome=%s,nome_curto=%s,cnpj=%s,telefone=%s,endereco=%s,cor_principal=%s,ativo=%s,url_publica=%s,atualizado_em=now() WHERE id=1",
+                (nome,curto,dados.cnpj.strip(),dados.telefone.strip(),dados.endereco.strip(),dados.cor_principal,dados.ativo,url_publica))
             return empresa_dados(cur)
 
 @app.post('/api/empresa/imagem/{tipo}')
