@@ -35,11 +35,11 @@ def _auditar(u, acao, pesquisa_id):
 
 
 def _registro(cur, pesquisa_id, lock=False):
-    cur.execute("SELECT id,titulo,descricao,anonima,status,imagem_capa,inicio_em,encerramento_em,divulgar_resultados FROM pesq_pesquisas WHERE id=%s" + (" FOR UPDATE" if lock else ""), (pesquisa_id,))
+    cur.execute("SELECT id,titulo,descricao,anonima,status,imagem_capa,inicio_em,encerramento_em,divulgar_resultados,enviar_whatsapp,exigir_senha FROM pesq_pesquisas WHERE id=%s" + (" FOR UPDATE" if lock else ""), (pesquisa_id,))
     r = cur.fetchone()
     if not r:
         raise HTTPException(404, "Pesquisa não encontrada")
-    return dict(zip(("id", "titulo", "descricao", "anonima", "status", "imagem_capa", "inicio_em", "encerramento_em", "divulgar_resultados"), r))
+    return dict(zip(("id", "titulo", "descricao", "anonima", "status", "imagem_capa", "inicio_em", "encerramento_em", "divulgar_resultados", "enviar_whatsapp", "exigir_senha"), r))
 
 
 def _criterio_valido(tipo, valor):
@@ -88,6 +88,7 @@ class PesquisaNova(BaseModel):
     imagem_capa: Optional[str] = None
     inicio_em: Optional[datetime] = None
     encerramento_em: Optional[datetime] = None
+    enviar_whatsapp: bool = False
 
 
 class PerguntaNova(BaseModel):
@@ -122,10 +123,10 @@ def criar_pesquisa(dados: PesquisaNova, authorization: Optional[str] = Header(No
         raise HTTPException(422, "Encerramento deve ser posterior ao início")
     with _deps["conectar"]() as conn:
         with conn.cursor() as cur:
-            cur.execute("""INSERT INTO pesq_pesquisas(titulo,descricao,anonima,imagem_capa,inicio_em,encerramento_em,criado_por)
-                VALUES (%s,%s,%s,%s,%s,%s,%s) RETURNING id""",
+            cur.execute("""INSERT INTO pesq_pesquisas(titulo,descricao,anonima,imagem_capa,inicio_em,encerramento_em,criado_por,enviar_whatsapp,exigir_senha)
+                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,TRUE) RETURNING id""",
                 (dados.titulo.strip(), dados.descricao, dados.anonima, dados.imagem_capa,
-                 dados.inicio_em, dados.encerramento_em, u[0]))
+                 dados.inicio_em, dados.encerramento_em, u[0], dados.enviar_whatsapp))
             pid = cur.fetchone()[0]
             cur.execute("INSERT INTO pesq_auditoria(pesquisa_id,usuario_id,acao,dados_novos) VALUES (%s,%s,'CRIAR',%s)",
                         (pid, u[0], Jsonb({"titulo": dados.titulo, "anonima": dados.anonima})))
@@ -188,8 +189,13 @@ def listar_admin(authorization: Optional[str] = Header(None)):
     _usuario(authorization, True)
     with _deps["conectar"]() as conn:
         with conn.cursor() as cur:
-            cur.execute("SELECT id,titulo,anonima,status,inicio_em,encerramento_em FROM pesq_pesquisas ORDER BY id DESC")
-            return [dict(zip(("id", "titulo", "anonima", "status", "inicio_em", "encerramento_em"), r)) for r in cur.fetchall()]
+            cur.execute("""SELECT p.id,p.titulo,p.anonima,p.status,p.inicio_em,p.encerramento_em,
+                p.enviar_whatsapp,p.exigir_senha,
+                (SELECT COUNT(*) FROM intranet_links_acesso l
+                 WHERE l.modulo='PESQUISA' AND l.recurso_id=p.id
+                   AND l.revogado_em IS NULL) AS links_gerados
+                FROM pesq_pesquisas p ORDER BY p.id DESC""")
+            return [dict(zip(("id", "titulo", "anonima", "status", "inicio_em", "encerramento_em", "enviar_whatsapp", "exigir_senha", "links_gerados"), r)) for r in cur.fetchall()]
 
 
 @router_pesquisas.post("/{pesquisa_id}/perguntas", status_code=201)
@@ -589,6 +595,26 @@ def publicar(pesquisa_id: int, authorization: Optional[str] = Header(None)):
 
 
 
+@router_pesquisas.post("/{pesquisa_id}/encerrar")
+def encerrar_pesquisa(pesquisa_id: int, authorization: Optional[str] = Header(None)):
+    """Encerramento manual: preserva respostas e invalida os links de acesso."""
+    u = _usuario(authorization, True)
+    with _deps["conectar"]() as conn:
+        with conn.cursor() as cur:
+            registro = _registro(cur, pesquisa_id, lock=True)
+            if registro["status"] not in ("PUBLICADA", "AGENDADA"):
+                raise HTTPException(409, "Somente pesquisas publicadas ou agendadas podem ser encerradas")
+            cur.execute("UPDATE pesq_pesquisas SET status='ENCERRADA', encerramento_em=NOW(), atualizado_em=NOW() WHERE id=%s", (pesquisa_id,))
+            cur.execute("""UPDATE intranet_links_acesso SET revogado_em=NOW()
+                WHERE modulo='PESQUISA' AND recurso_id=%s AND revogado_em IS NULL""", (pesquisa_id,))
+            cur.execute("""UPDATE intranet_links_autorizacoes a SET revogado_em=NOW()
+                FROM intranet_links_acesso l WHERE a.link_id=l.id AND l.modulo='PESQUISA'
+                AND l.recurso_id=%s AND a.revogado_em IS NULL""", (pesquisa_id,))
+            cur.execute("INSERT INTO pesq_auditoria(pesquisa_id,usuario_id,acao) VALUES (%s,%s,'ENCERRAR')", (pesquisa_id, u[0]))
+    _auditar(u, "ENCERRAR", pesquisa_id)
+    return {"ok": True, "id": pesquisa_id, "status": "ENCERRADA"}
+
+
 @router_pesquisas.get("/minhas")
 def listar_minhas_pesquisas(authorization: Optional[str] = Header(None)):
     u = _usuario(authorization)
@@ -811,7 +837,10 @@ def consultar_minhas_respostas(
 @router_pesquisas.post("/{pesquisa_id}/enviar")
 def enviar_respostas(pesquisa_id: int, dados: Envio, authorization: Optional[str] = Header(None)):
     u = _usuario(authorization)
-    usuario_id = u[0]
+    return _enviar_respostas_usuario(pesquisa_id, dados, u[0])
+
+
+def _enviar_respostas_usuario(pesquisa_id: int, dados: Envio, usuario_id: int):
 
     with _deps["conectar"]() as conn:
         with conn.cursor() as cur:
@@ -939,3 +968,75 @@ def enviar_respostas(pesquisa_id: int, dados: Envio, authorization: Optional[str
 
 
 
+
+
+@router_pesquisas.get("/{pesquisa_id}/painel-admin")
+def painel_admin_pesquisa(pesquisa_id: int, authorization: Optional[str] = Header(None)):
+    _usuario(authorization, True)
+    with _deps["conectar"]() as conn:
+        with conn.cursor() as cur:
+            p = _registro(cur, pesquisa_id)
+            cur.execute("SELECT tipo, valor FROM pesq_publico WHERE pesquisa_id=%s ORDER BY id", (pesquisa_id,))
+            publico = [{"tipo": t, "valor": v} for t, v in cur.fetchall()]
+
+            # Em pesquisas anônimas, nunca consulta nem devolve nomes, departamentos
+            # ou situação individual de participação. Somente totais agregados.
+            if p["anonima"]:
+                cur.execute("""SELECT COUNT(*) FROM intranet_usuarios u
+                    WHERE u.ativo IS TRUE AND EXISTS (
+                      SELECT 1 FROM pesq_publico pp WHERE pp.pesquisa_id=%s AND (
+                        pp.tipo='TODOS'
+                        OR (pp.tipo='DEPARTAMENTO' AND UPPER(TRIM(pp.valor))=UPPER(TRIM(u.departamento)))
+                        OR (pp.tipo='CENTRO_CUSTO' AND UPPER(TRIM(pp.valor))=UPPER(TRIM(u.centro_custo)))
+                        OR (pp.tipo='CARGO' AND UPPER(TRIM(pp.valor))=UPPER(TRIM(u.cargo)))
+                      ))""", (pesquisa_id,))
+                total_atribuidos = cur.fetchone()[0]
+                cur.execute("SELECT COUNT(DISTINCT usuario_id) FROM pesq_participacao WHERE pesquisa_id=%s", (pesquisa_id,))
+                total_respondentes = cur.fetchone()[0]
+                pessoas = []
+            else:
+                cur.execute("""SELECT u.id, u.nome, u.departamento, u.centro_custo, u.cargo,
+                          EXISTS(SELECT 1 FROM pesq_participacao pa WHERE pa.pesquisa_id=%s AND pa.usuario_id=u.id)
+                          FROM intranet_usuarios u WHERE u.ativo IS TRUE AND EXISTS (
+                            SELECT 1 FROM pesq_publico pp WHERE pp.pesquisa_id=%s AND (
+                            pp.tipo='TODOS' OR (pp.tipo='DEPARTAMENTO' AND UPPER(TRIM(pp.valor))=UPPER(TRIM(u.departamento)))
+                            OR (pp.tipo='CENTRO_CUSTO' AND UPPER(TRIM(pp.valor))=UPPER(TRIM(u.centro_custo)))
+                            OR (pp.tipo='CARGO' AND UPPER(TRIM(pp.valor))=UPPER(TRIM(u.cargo)))
+                            )) ORDER BY u.nome""", (pesquisa_id, pesquisa_id))
+                pessoas = [{"id": r[0], "nome": r[1], "departamento": r[2], "centro_custo": r[3], "cargo": r[4], "respondeu": r[5]} for r in cur.fetchall()]
+                total_atribuidos = len(pessoas)
+                total_respondentes = sum(1 for pessoa in pessoas if pessoa["respondeu"])
+
+            cur.execute("""SELECT q.id,q.enunciado,q.tipo,q.ordem,q.obrigatoria
+                           FROM pesq_perguntas q WHERE q.pesquisa_id=%s ORDER BY q.ordem,q.id""", (pesquisa_id,))
+            perguntas=[]
+            for qid, enunciado, tipo, ordem, obrigatoria in cur.fetchall():
+                cur.execute("SELECT id,texto FROM pesq_alternativas WHERE pergunta_id=%s ORDER BY ordem,id", (qid,))
+                alternativas=[{"id": a,"texto": t} for a,t in cur.fetchall()]
+                cur.execute("""SELECT r.valor FROM pesq_respostas r JOIN pesq_envios e ON e.id=r.envio_id
+                               WHERE e.pesquisa_id=%s AND r.pergunta_id=%s""", (pesquisa_id,qid))
+                valores=[r[0] for r in cur.fetchall()]
+                frequencias={}
+                if tipo in ('ESCOLHA_UNICA','MULTIPLA_ESCOLHA'):
+                    for a in alternativas: frequencias[str(a['id'])]=0
+                    for v in valores:
+                        for x in (v if isinstance(v,list) else [v]):
+                            k=str(x)
+                            if k in frequencias: frequencias[k]+=1
+                elif tipo in ('NOTA_1_5','NOTA_0_10','SIM_NAO'):
+                    for v in valores:
+                        k=('Sim' if v else 'Não') if isinstance(v,bool) else str(v)
+                        frequencias[k]=frequencias.get(k,0)+1
+                perguntas.append({"id":qid,"enunciado":enunciado,"tipo":tipo,"ordem":ordem,
+                                  "obrigatoria":obrigatoria,"alternativas":alternativas,
+                                  "total_respostas":len(valores),"frequencias":frequencias,
+                                  "textos": [v for v in valores if isinstance(v,str)] if tipo=='TEXTO' else []})
+            cur.execute("SELECT COUNT(*) FROM pesq_participacao WHERE pesquisa_id=%s", (pesquisa_id,))
+            total_participacoes=cur.fetchone()[0]
+            cur.execute("SELECT COUNT(*) FROM pesq_envios WHERE pesquisa_id=%s", (pesquisa_id,))
+            total_envios=cur.fetchone()[0]
+
+    return {"pesquisa":p,"publico":publico,"pessoas":pessoas,"perguntas":perguntas,
+            "indicadores":{"atribuidos":total_atribuidos,"respondentes":total_respondentes,
+            "pendentes":max(0,total_atribuidos-total_respondentes),
+            "participacoes_registradas":total_participacoes,"envios_registrados":total_envios}}

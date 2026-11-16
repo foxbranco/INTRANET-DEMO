@@ -2122,6 +2122,11 @@ configurar_pesquisas(
 
 app.include_router(router_pesquisas)
 
+# LINKS INDIVIDUAIS DE PESQUISAS (ACESSO RESTRITO)
+from pesquisas_links_api import router as router_pesquisas_links, configurar as configurar_pesquisas_links
+configurar_pesquisas_links(conectar, autenticar)
+app.include_router(router_pesquisas_links)
+
 # MODULO DASHBOARDS - AUDITORIA
 from dashboard_api import router_dashboards, configurar_dashboards
 

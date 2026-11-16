@@ -79,6 +79,7 @@ def _criar_tabela(cur):
     )''')
     cur.execute("ALTER TABLE intranet_publicacoes ADD COLUMN IF NOT EXISTS enviar_whatsapp BOOLEAN NOT NULL DEFAULT FALSE")
     cur.execute("ALTER TABLE intranet_publicacoes ADD COLUMN IF NOT EXISTS exigir_senha BOOLEAN NOT NULL DEFAULT FALSE")
+    cur.execute("ALTER TABLE intranet_publicacoes ADD COLUMN IF NOT EXISTS exigir_facial BOOLEAN NOT NULL DEFAULT FALSE")
     cur.execute("ALTER TABLE intranet_avisos_link_teste ADD COLUMN IF NOT EXISTS token_caminho TEXT")
     cur.execute("""CREATE TABLE IF NOT EXISTS intranet_avisos_link_autorizacoes (
         id BIGSERIAL PRIMARY KEY, link_id BIGINT NOT NULL REFERENCES intranet_avisos_link_teste(id),
@@ -173,6 +174,7 @@ def listar_destinatarios(publicacao_id: int, authorization: Optional[str] = Head
 class ConfigWhatsApp(BaseModel):
     enviar_whatsapp: bool = False
     exigir_senha: bool = True
+    exigir_facial: bool = False
 
 @router.put('/api/teste-aviso/publicacao/{publicacao_id}/config')
 def definir_config(publicacao_id: int, dados: ConfigWhatsApp, authorization: Optional[str] = Header(None)):
@@ -180,7 +182,7 @@ def definir_config(publicacao_id: int, dados: ConfigWhatsApp, authorization: Opt
     with _conectar() as conn:
         with conn.cursor() as cur:
             _criar_tabela(cur)
-            cur.execute("""UPDATE intranet_publicacoes SET enviar_whatsapp=%s, exigir_senha=%s,
+            cur.execute("""UPDATE intranet_publicacoes SET enviar_whatsapp=%s, exigir_senha=%s, exigir_facial=FALSE,
                     exige_ciencia=CASE WHEN %s THEN TRUE ELSE exige_ciencia END
                     WHERE id=%s AND tipo='AVISO' AND status='RASCUNHO' RETURNING id""",
                     (dados.enviar_whatsapp,dados.exigir_senha if dados.enviar_whatsapp else False,dados.enviar_whatsapp,publicacao_id))
@@ -193,10 +195,10 @@ def consultar_config(publicacao_id: int, authorization: Optional[str] = Header(N
     with _conectar() as conn:
         with conn.cursor() as cur:
             _criar_tabela(cur)
-            cur.execute('SELECT enviar_whatsapp,exigir_senha FROM intranet_publicacoes WHERE id=%s',(publicacao_id,))
+            cur.execute('SELECT enviar_whatsapp,exigir_senha,exigir_facial FROM intranet_publicacoes WHERE id=%s',(publicacao_id,))
             row=cur.fetchone()
     if not row: raise HTTPException(404,'Publicação não encontrada')
-    return {'enviar_whatsapp':row[0], 'exigir_senha':row[1]}
+    return {'enviar_whatsapp':row[0], 'exigir_senha':row[1], 'exigir_facial':False}
 
 @router.post('/api/teste-aviso/publicacao/{publicacao_id}/gerar-todos')
 def gerar_todos(publicacao_id: int, authorization: Optional[str] = Header(None)):
@@ -264,7 +266,7 @@ def entrar_aviso(token: str, senha: str = Form(...)):
         return _pagina('Link inválido', 'Este link não está disponível.')
     with _conectar() as conn, conn.cursor() as cur:
         _criar_tabela(cur)
-        cur.execute("""SELECT l.id,u.nome,u.senha_hash,u.trocar_senha,u.cpf,p.exigir_senha
+        cur.execute("""SELECT l.id,u.nome,u.senha_hash,u.trocar_senha,u.cpf,p.exigir_senha,p.exigir_facial
             FROM intranet_avisos_link_teste l
             JOIN intranet_publicacoes p ON p.id=l.publicacao_id
             JOIN intranet_usuarios u ON u.id::text=l.usuario_id AND u.ativo=TRUE
@@ -274,7 +276,8 @@ def entrar_aviso(token: str, senha: str = Form(...)):
             AND p.fim>=CURRENT_DATE AND d.confirmado_em IS NULL""", (_hash(token),))
         r=cur.fetchone()
         if not r: return _pagina('Link indisponível','Este link expirou ou não está disponível.')
-        link_id,nome,senha_hash,trocar,cpf,exige=r
+        link_id,nome,senha_hash,trocar,cpf,exige,facial=r
+        if facial: return _pagina('Reconhecimento facial indisponível', 'Este aviso exige validação facial, ainda não homologada. O acesso está bloqueado por segurança.')
         if not exige: return RedirectResponse('/teste-aviso/'+token,status_code=303)
         if not senha_hash or not bcrypt.checkpw(senha.encode(), senha_hash.encode()):
             return _form_senha(token,nome,'Senha incorreta. Tente novamente.')
@@ -305,7 +308,7 @@ def trocar_senha_aviso(token:str, senha_atual:str=Form(...), nova_senha:str=Form
           JOIN intranet_publicacoes_destinatarios d ON d.publicacao_id=l.publicacao_id AND d.usuario_id=l.usuario_id
           WHERE l.token_hash=%s AND l.revogado_em IS NULL AND l.utilizado_em IS NULL AND l.expira_em>NOW()
           AND p.status='PUBLICADA' AND p.exige_ciencia=TRUE AND p.exigir_senha=TRUE
-          AND p.fim>=CURRENT_DATE AND d.confirmado_em IS NULL FOR UPDATE OF u""",(_hash(token),))
+          AND p.fim>=CURRENT_DATE AND d.confirmado_em IS NULL AND p.exigir_facial=FALSE FOR UPDATE OF u""",(_hash(token),))
         r=cur.fetchone()
         if not r: return _pagina('Link indisponível','Link expirado ou já utilizado.')
         link_id,uid,nome,cpf,senha_hash,trocar=r
@@ -331,7 +334,7 @@ def abrir_aviso(token: str, acesso_aviso: Optional[str] = Cookie(None)):
     with _conectar() as conn:
         with conn.cursor() as cur:
             cur.execute('''SELECT l.publicacao_id,l.usuario_id,l.expira_em,l.utilizado_em,l.revogado_em,
-                       p.titulo,p.descricao,p.status,p.exige_ciencia,d.confirmado_em,p.fim,u.nome,p.exigir_senha
+                       p.titulo,p.descricao,p.status,p.exige_ciencia,d.confirmado_em,p.fim,u.nome,p.exigir_senha,p.exigir_facial
                 FROM intranet_avisos_link_teste l
                 JOIN intranet_publicacoes p ON p.id=l.publicacao_id
                 JOIN intranet_publicacoes_destinatarios d
@@ -341,7 +344,8 @@ def abrir_aviso(token: str, acesso_aviso: Optional[str] = Cookie(None)):
             r=cur.fetchone()
             if not r:
                 return _pagina('Link inválido', 'Este link não está disponível.')
-            pub_id,uid,expira,utilizado,revogado,titulo,descricao,status,exige,confirmado,fim,nome,exigir_senha=r
+            pub_id,uid,expira,utilizado,revogado,titulo,descricao,status,exige,confirmado,fim,nome,exigir_senha,exigir_facial=r
+            if exigir_facial: return _pagina('Reconhecimento facial indisponível', 'Este aviso exige validação facial, ainda não homologada. O acesso está bloqueado por segurança.', destinatario=nome)
             if utilizado or confirmado:
                 return _pagina('Aviso já confirmado', 'A confirmação já foi registrada.', permitir_fechar=True, destinatario=nome)
             if revogado or min(expira,_expiracao(fim)) <= datetime.now(timezone.utc) or status!='PUBLICADA' or not exige:
@@ -363,7 +367,7 @@ def confirmar_aviso(token: str, acesso_aviso: Optional[str] = Cookie(None)):
         return _pagina('Link inválido', 'Este link não está disponível.')
     with _conectar() as conn:
         with conn.cursor() as cur:
-            cur.execute('''SELECT l.id,l.publicacao_id,l.usuario_id,u.nome,p.exigir_senha
+            cur.execute('''SELECT l.id,l.publicacao_id,l.usuario_id,u.nome,p.exigir_senha,p.exigir_facial
                 FROM intranet_avisos_link_teste l
                 JOIN intranet_publicacoes p ON p.id=l.publicacao_id
                 JOIN intranet_publicacoes_destinatarios d
@@ -375,7 +379,8 @@ def confirmar_aviso(token: str, acesso_aviso: Optional[str] = Cookie(None)):
             r=cur.fetchone()
             if not r:
                 return _pagina('Não foi possível confirmar', 'Link expirado, inválido ou já utilizado.')
-            link_id,pub_id,uid,nome,exigir_senha=r
+            link_id,pub_id,uid,nome,exigir_senha,exigir_facial=r
+            if exigir_facial: return _pagina('Reconhecimento facial indisponível', 'Confirmação bloqueada: a validação facial ainda não está homologada.')
             if exigir_senha and not _autorizado(cur, token, acesso_aviso):
                 return _pagina('Senha necessária', 'Abra o link novamente e informe sua senha antes de confirmar.')
             cur.execute('''UPDATE intranet_publicacoes_destinatarios
@@ -410,3 +415,41 @@ def status_link(link_id: int, authorization: Optional[str] = Header(None)):
         raise HTTPException(404,'Link não encontrado')
     return dict(zip(('id','publicacao_id','usuario_id','usuario','titulo','criado_em',
                      'expira_em','utilizado_em','revogado_em','visualizado_em','confirmado_em','visualizado_via','confirmado_via'),r))
+
+
+@router.get('/teste-camera-facial', include_in_schema=False)
+def teste_camera_facial():
+    """Diagnostico local da camera: nao captura, transmite nem armazena biometria."""
+    pagina = """<!doctype html><html lang="pt-br"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="referrer" content="no-referrer"><title>Teste da camera facial</title>
+<style>body{font-family:system-ui,Arial;background:#f3f5f9;color:#172b4d;padding:18px}
+main{max-width:440px;margin:auto;background:white;padding:22px;border-radius:14px}
+video{width:100%;background:#111;border-radius:10px;transform:scaleX(-1)}
+button{padding:12px;margin:6px 4px 6px 0;border:0;border-radius:8px;background:#17663b;color:white}
+small{display:block;margin-top:12px;color:#586477}</style></head><body><main>
+<h2>Teste da camera do celular</h2><p>Este teste apenas verifica a abertura da camera frontal.
+Nao realiza reconhecimento facial ou prova de vida.</p>
+<video id="video" autoplay playsinline muted></video>
+<p id="estado" role="status">Camera desligada.</p>
+<button id="ligar" type="button">Abrir camera</button>
+<button id="parar" type="button">Desligar camera</button>
+<small>Nenhuma imagem e enviada ou armazenada. Use HTTPS no celular.</small>
+</main><script>
+'use strict';let fluxo=null;
+const video=document.getElementById('video'), estado=document.getElementById('estado');
+function parar(){if(fluxo){fluxo.getTracks().forEach(t=>t.stop());fluxo=null;}video.srcObject=null;estado.textContent='Camera desligada.';}
+document.getElementById('ligar').addEventListener('click',async()=>{
+  parar();if(!navigator.mediaDevices?.getUserMedia){estado.textContent='Camera indisponivel: abra em HTTPS.';return;}
+  try{fluxo=await navigator.mediaDevices.getUserMedia({audio:false,video:{facingMode:'user'}});
+    video.srcObject=fluxo;estado.textContent='Camera frontal aberta. Teste concluido.';
+  }catch(e){estado.textContent='Nao foi possivel abrir a camera: '+e.name;}
+});
+document.getElementById('parar').addEventListener('click',parar);
+window.addEventListener('pagehide',parar);
+</script></body></html>"""
+    return HTMLResponse(pagina, headers={
+        'Cache-Control':'no-store', 'Referrer-Policy':'no-referrer',
+        'X-Content-Type-Options':'nosniff',
+        'Content-Security-Policy':"default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; media-src blob:; base-uri 'none'; frame-ancestors 'none'",
+        'Permissions-Policy':'camera=(self), microphone=()'})

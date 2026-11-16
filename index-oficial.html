@@ -5416,11 +5416,11 @@ let eaFiltroPublicacoes='TODOS';
 function eaFiltrarPublicacoes(tipo){eaFiltroPublicacoes=tipo;document.querySelectorAll('.ea-filtro').forEach(b=>{const ativo=b.dataset.tipo===tipo;b.classList.toggle('ativo',ativo);b.setAttribute('aria-pressed',String(ativo))});document.querySelectorAll('#ea-lista .ea-item').forEach(el=>{el.hidden=tipo!=='TODOS'&&el.dataset.tipo!==tipo});const vazio=document.getElementById('ea-filtro-vazio');if(vazio)vazio.hidden=!!document.querySelector('#ea-lista .ea-item:not([hidden])');}
 let eaEditandoId=null;
 function eaTelaAdmin(){return `<section class="card ea-admin"><div class="ea-header"><div><h2>Eventos e Avisos</h2><p class="muted">Gerencie publicações e acompanhe a ciência dos destinatários.</p></div><button type="button" class="btn secondary" onclick="eaCarregarAdmin()">Atualizar lista</button></div>
- <details id="ea-editor" class="ea-editor"><summary>＋ Nova publicação <span>Abra para cadastrar um evento ou aviso</span></summary><form id="ea-form" onsubmit="eaSalvar(event)"><h3 id="ea-form-titulo">Nova publicação</h3><div class="ea-grid"><label>Tipo<select name="tipo" required onchange="eaAlternarCiencia(this.value)"><option value="EVENTO">Evento</option><option value="AVISO">Aviso</option></select></label><label>Título<input name="titulo" maxlength="250" required></label><label>Início<input name="inicio" type="date" required></label><label>Fim<input name="fim" type="date" required></label><label>Público-alvo<select name="publico_tipo" onchange="eaAtualizarAlvos(this.value)"><option value="TODOS">Todos</option><option value="CARGO">Cargo</option><option value="DEPARTAMENTO">Departamento</option><option value="USUARIO">Usuário</option></select></label><label id="ea-ciencia" class="ea-check" hidden><input type="checkbox" name="exige_ciencia"> Exigir confirmação “Li e estou ciente”</label><label id="ea-whatsapp" class="ea-check" hidden><input type="checkbox" name="enviar_whatsapp" onchange="eaAlternarWhatsApp()"> Gerar links individuais para WhatsApp</label><label id="ea-senha" class="ea-check" hidden><input type="checkbox" name="exigir_senha" checked> Exigir senha para acessar o link</label></div><label style="margin-top:14px">Descrição<textarea name="descricao" required rows="3"></textarea></label><div id="ea-alvos-wrap" hidden><label>Selecione um ou mais destinatários</label><div class="ea-alvo-bar"><input type="search" id="ea-alvo-busca" placeholder="Pesquisar nome ou matrícula" oninput="eaFiltrarAlvos()"><button type="button" class="btn secondary" onclick="eaSelecionarAlvosVisiveis(true)">Marcar visíveis</button><button type="button" class="btn secondary" onclick="eaSelecionarAlvosVisiveis(false)">Desmarcar visíveis</button><span id="ea-alvo-total">0 selecionados</span></div><div id="ea-alvo-checks" class="ea-alvo-checks"></div><select id="ea-alvos" multiple hidden aria-hidden="true"></select><p class="meta">Clique nas caixas para selecionar, sem usar Ctrl.</p></div><p id="ea-status" class="ea-status" role="status"></p><div class="ea-actions"><button class="btn" type="submit" id="ea-btn-salvar">Salvar rascunho</button><button class="btn secondary" type="button" id="ea-btn-desistir" hidden onclick="eaLimparFormulario()">Descartar alterações</button></div></form></details><h3 class="ea-section-title">Publicações cadastradas</h3><div class="ea-filtros" role="group" aria-label="Filtrar publicações"><button type="button" class="ea-filtro ativo" data-tipo="TODOS" onclick="eaFiltrarPublicacoes('TODOS')">Todos</button><button type="button" class="ea-filtro" data-tipo="EVENTO" onclick="eaFiltrarPublicacoes('EVENTO')">Eventos</button><button type="button" class="ea-filtro" data-tipo="AVISO" onclick="eaFiltrarPublicacoes('AVISO')">Avisos</button></div><div id="ea-lista" class="ea-items">Carregando...</div></section>`}
+ <details id="ea-editor" class="ea-editor"><summary>＋ Nova publicação <span>Abra para cadastrar um evento ou aviso</span></summary><form id="ea-form" onsubmit="eaSalvar(event)"><h3 id="ea-form-titulo">Nova publicação</h3><div class="ea-grid"><label>Tipo<select name="tipo" required onchange="eaAlternarCiencia(this.value)"><option value="EVENTO">Evento</option><option value="AVISO">Aviso</option></select></label><label>Título<input name="titulo" maxlength="250" required></label><label>Início<input name="inicio" type="date" required></label><label>Fim<input name="fim" type="date" required></label><label>Público-alvo<select name="publico_tipo" onchange="eaAtualizarAlvos(this.value)"><option value="TODOS">Todos</option><option value="CARGO">Cargo</option><option value="DEPARTAMENTO">Departamento</option><option value="USUARIO">Usuário</option></select></label><label id="ea-ciencia" class="ea-check" hidden><input type="checkbox" name="exige_ciencia"> Exigir confirmação “Li e estou ciente”</label><label id="ea-whatsapp" class="ea-check" hidden><input type="checkbox" name="enviar_whatsapp" onchange="eaAlternarWhatsApp()"> Gerar links individuais para WhatsApp</label><label id="ea-senha" class="ea-check" hidden><input type="checkbox" name="exigir_senha" checked> Exige senha</label><label id="ea-facial" class="ea-check" hidden><input type="checkbox" name="exigir_facial" disabled aria-disabled="true"> Exigir facial: Não (temporariamente indisponível)</label></div><label style="margin-top:14px">Descrição<textarea name="descricao" required rows="3"></textarea></label><div id="ea-alvos-wrap" hidden><label>Selecione um ou mais destinatários</label><div class="ea-alvo-bar"><input type="search" id="ea-alvo-busca" placeholder="Pesquisar nome ou matrícula" oninput="eaFiltrarAlvos()"><button type="button" class="btn secondary" onclick="eaSelecionarAlvosVisiveis(true)">Marcar visíveis</button><button type="button" class="btn secondary" onclick="eaSelecionarAlvosVisiveis(false)">Desmarcar visíveis</button><span id="ea-alvo-total">0 selecionados</span></div><div id="ea-alvo-checks" class="ea-alvo-checks"></div><select id="ea-alvos" multiple hidden aria-hidden="true"></select><p class="meta">Clique nas caixas para selecionar, sem usar Ctrl.</p></div><p id="ea-status" class="ea-status" role="status"></p><div class="ea-actions"><button class="btn" type="submit" id="ea-btn-salvar">Salvar rascunho</button><button class="btn secondary" type="button" id="ea-btn-desistir" hidden onclick="eaLimparFormulario()">Descartar alterações</button></div></form></details><h3 class="ea-section-title">Publicações cadastradas</h3><div class="ea-filtros" role="group" aria-label="Filtrar publicações"><button type="button" class="ea-filtro ativo" data-tipo="TODOS" onclick="eaFiltrarPublicacoes('TODOS')">Todos</button><button type="button" class="ea-filtro" data-tipo="EVENTO" onclick="eaFiltrarPublicacoes('EVENTO')">Eventos</button><button type="button" class="ea-filtro" data-tipo="AVISO" onclick="eaFiltrarPublicacoes('AVISO')">Avisos</button></div><div id="ea-lista" class="ea-items">Carregando...</div></section>`}
 function eaAlternarCiencia(tipo){const area=document.getElementById('ea-ciencia'),wa=document.getElementById('ea-whatsapp');if(!area)return;area.hidden=tipo!=='AVISO';if(wa)wa.hidden=tipo!=='AVISO';const senha=document.getElementById('ea-senha');if(senha)senha.hidden=tipo!=='AVISO'||!document.getElementById('ea-form')?.elements.namedItem('enviar_whatsapp')?.checked;if(tipo!=='AVISO'){area.querySelector('input').checked=false;if(wa)wa.querySelector('input').checked=false;}eaAlternarWhatsApp();}
-function eaAlternarWhatsApp(){const f=document.getElementById('ea-form');if(!f)return;const wa=f.elements.namedItem('enviar_whatsapp'),c=f.elements.namedItem('exige_ciencia');if(wa?.checked){c.checked=true;c.disabled=true;}else c.disabled=false;const senha=document.getElementById('ea-senha');if(senha)senha.hidden=!wa?.checked||f.elements.namedItem('tipo')?.value!=='AVISO';}
+function eaAlternarWhatsApp(){const f=document.getElementById('ea-form');if(!f)return;const wa=f.elements.namedItem('enviar_whatsapp'),c=f.elements.namedItem('exige_ciencia');if(wa?.checked){c.checked=true;c.disabled=true;}else c.disabled=false;const senha=document.getElementById('ea-senha'),facial=document.getElementById('ea-facial');const ocultar=!wa?.checked||f.elements.namedItem('tipo')?.value!=='AVISO';if(senha)senha.hidden=ocultar;if(facial)facial.hidden=ocultar;}
 function eaLimparFormulario(){eaEditandoId=null;const f=document.getElementById('ea-form');if(!f)return;f.reset();document.getElementById('ea-form-titulo').textContent='Nova publicação';document.getElementById('ea-btn-salvar').textContent='Salvar rascunho';document.getElementById('ea-btn-desistir').hidden=true;eaAlternarCiencia('EVENTO');document.getElementById('ea-status').textContent='';eaAtualizarAlvos('TODOS');const busca=document.getElementById('ea-alvo-busca');if(busca)busca.value='';}
-async function eaEditar(id){const x=eaAdminItens.find(x=>Number(x.id)===id);if(!x||String(x.status).toUpperCase()!=='RASCUNHO')return alert('Somente rascunhos podem ser editados.');try{const d=await eaApi('/admin/'+id);try{const c=await eaWaRequest('/publicacao/'+id+'/config');d.enviar_whatsapp=!!c.enviar_whatsapp;d.exigir_senha=!!c.exigir_senha;}catch(e){console.warn(e);}const f=document.getElementById('ea-form');eaEditandoId=id;document.getElementById('ea-editor').open=true;for(const k of ['tipo','titulo','descricao','inicio','fim','publico_tipo']){const el=f.elements.namedItem(k);if(el)el.value=String(d[k]||'').slice(0,k==='inicio'||k==='fim'?10:10000)}f.elements.namedItem('exige_ciencia').checked=!!d.exige_ciencia;f.elements.namedItem('enviar_whatsapp').checked=!!d.enviar_whatsapp;f.elements.namedItem('exigir_senha').checked=d.exigir_senha!==false;eaAlternarCiencia(d.tipo);eaAtualizarAlvos(d.publico_tipo);const sel=document.getElementById('ea-alvos');for(const o of sel.options)o.selected=(d.alvos||[]).includes(o.value);eaRenderizarAlvos();document.getElementById('ea-form-titulo').textContent='Editar rascunho #'+id;document.getElementById('ea-btn-salvar').textContent='Salvar alterações';document.getElementById('ea-btn-desistir').hidden=false;document.getElementById('ea-status').textContent='Alterações permitidas somente antes da publicação.';f.scrollIntoView({behavior:'smooth',block:'start'})}catch(e){alert('Não foi possível abrir o rascunho: '+e.message)}}
+async function eaEditar(id){const x=eaAdminItens.find(x=>Number(x.id)===id);if(!x||String(x.status).toUpperCase()!=='RASCUNHO')return alert('Somente rascunhos podem ser editados.');try{const d=await eaApi('/admin/'+id);try{const c=await eaWaRequest('/publicacao/'+id+'/config');d.enviar_whatsapp=!!c.enviar_whatsapp;d.exigir_senha=!!c.exigir_senha;d.exigir_facial=!!c.exigir_facial;}catch(e){console.warn(e);}const f=document.getElementById('ea-form');eaEditandoId=id;document.getElementById('ea-editor').open=true;for(const k of ['tipo','titulo','descricao','inicio','fim','publico_tipo']){const el=f.elements.namedItem(k);if(el)el.value=String(d[k]||'').slice(0,k==='inicio'||k==='fim'?10:10000)}f.elements.namedItem('exige_ciencia').checked=!!d.exige_ciencia;f.elements.namedItem('enviar_whatsapp').checked=!!d.enviar_whatsapp;f.elements.namedItem('exigir_senha').checked=d.exigir_senha!==false;f.elements.namedItem('exigir_facial').checked=false;eaAlternarCiencia(d.tipo);eaAtualizarAlvos(d.publico_tipo);const sel=document.getElementById('ea-alvos');for(const o of sel.options)o.selected=(d.alvos||[]).includes(o.value);eaRenderizarAlvos();document.getElementById('ea-form-titulo').textContent='Editar rascunho #'+id;document.getElementById('ea-btn-salvar').textContent='Salvar alterações';document.getElementById('ea-btn-desistir').hidden=false;document.getElementById('ea-status').textContent='Alterações permitidas somente antes da publicação.';f.scrollIntoView({behavior:'smooth',block:'start'})}catch(e){alert('Não foi possível abrir o rascunho: '+e.message)}}
 function eaAtualizarAlvos(tipo){const wrap=document.getElementById('ea-alvos-wrap'),sel=document.getElementById('ea-alvos');if(!wrap||!sel)return;wrap.hidden=tipo==='TODOS';sel.innerHTML='';if(tipo==='TODOS')return;
  const users=Array.isArray(usuariosReais)?usuariosReais:[];
  const values=tipo==='USUARIO'?users.map(u=>({value:String(u.id),label:(u.nome||'Usuário')+' ('+(u.matricula||u.id)+')'})): [...new Set(users.map(u=>String(u[tipo==='CARGO'?'cargo':'departamento']||'').trim()).filter(Boolean))].sort().map(v=>({value:v,label:v}));
@@ -5431,8 +5431,8 @@ function eaContarAlvos(){const s=document.getElementById('ea-alvos');const n=s?[
 function eaSelecionarAlvosVisiveis(marcar){document.querySelectorAll('#ea-alvo-checks label:not([hidden]) input').forEach(c=>{c.checked=marcar;const o=document.getElementById('ea-alvos')?.options[Number(c.dataset.idx)];if(o)o.selected=marcar;});eaContarAlvos();}
 function eaRenderizarAlvos(){const s=document.getElementById('ea-alvos'),box=document.getElementById('ea-alvo-checks');if(!s||!box)return;box.innerHTML=[...s.options].map((o,i)=>`<label><input type="checkbox" data-idx="${i}" ${o.selected?'checked':''} onchange="document.getElementById('ea-alvos').options[${i}].selected=this.checked;eaContarAlvos()"><span>${esc(o.textContent)}</span></label>`).join('');eaFiltrarAlvos();}
 async function eaSalvar(ev){ev.preventDefault();const form=ev.target,fd=new FormData(form),status=document.getElementById('ea-status');const tipo=fd.get('publico_tipo');const alvos=tipo==='TODOS'?[]:[...document.getElementById('ea-alvos').selectedOptions].map(o=>o.value);if(tipo!=='TODOS'&&!alvos.length){status.textContent='Selecione pelo menos um destinatário.';return}if(fd.get('fim')<fd.get('inicio')){status.textContent='A data final deve ser igual ou posterior à inicial.';return}
- const body={tipo:fd.get('tipo'),titulo:String(fd.get('titulo')).trim(),descricao:String(fd.get('descricao')).trim(),inicio:fd.get('inicio'),fim:fd.get('fim'),publico_tipo:tipo,alvos,exige_ciencia:fd.get('tipo')==='AVISO'&&(fd.has('exige_ciencia')||fd.has('enviar_whatsapp')),enviar_whatsapp:fd.get('tipo')==='AVISO'&&fd.has('enviar_whatsapp'),exigir_senha:fd.has('exigir_senha')};
- status.textContent='Salvando...';try{const idAnterior=eaEditandoId;const salvo=await eaApi(eaEditandoId?'/admin/'+eaEditandoId:'/admin',eaEditandoId?'PUT':'POST',body);const idSalvo=Number(idAnterior||salvo.id||salvo.publicacao_id||salvo.publicacao?.id);if(idSalvo){await eaWaRequest('/publicacao/'+idSalvo+'/config','PUT',{enviar_whatsapp:body.enviar_whatsapp,exigir_senha:body.exigir_senha});}else if(body.enviar_whatsapp){status.textContent='Rascunho salvo, mas não foi possível identificar seu ID para habilitar WhatsApp. Atualize e edite o rascunho.';return;}eaLimparFormulario();document.getElementById('ea-editor').open=false;await eaCarregarAdmin()}catch(e){status.textContent='Erro: '+e.message}}
+ const body={tipo:fd.get('tipo'),titulo:String(fd.get('titulo')).trim(),descricao:String(fd.get('descricao')).trim(),inicio:fd.get('inicio'),fim:fd.get('fim'),publico_tipo:tipo,alvos,exige_ciencia:fd.get('tipo')==='AVISO'&&(fd.has('exige_ciencia')||fd.has('enviar_whatsapp')),enviar_whatsapp:fd.get('tipo')==='AVISO'&&fd.has('enviar_whatsapp'),exigir_senha:fd.has('exigir_senha'),exigir_facial:false};
+ status.textContent='Salvando...';try{const idAnterior=eaEditandoId;const salvo=await eaApi(eaEditandoId?'/admin/'+eaEditandoId:'/admin',eaEditandoId?'PUT':'POST',body);const idSalvo=Number(idAnterior||salvo.id||salvo.publicacao_id||salvo.publicacao?.id);if(idSalvo){await eaWaRequest('/publicacao/'+idSalvo+'/config','PUT',{enviar_whatsapp:body.enviar_whatsapp,exigir_senha:body.exigir_senha,exigir_facial:body.exigir_facial});}else if(body.enviar_whatsapp){status.textContent='Rascunho salvo, mas não foi possível identificar seu ID para habilitar WhatsApp. Atualize e edite o rascunho.';return;}eaLimparFormulario();document.getElementById('ea-editor').open=false;await eaCarregarAdmin()}catch(e){status.textContent='Erro: '+e.message}}
 function eaDataBR(valor){const m=String(valor||'').match(/^(\d{4})-(\d{2})-(\d{2})/);return m?`${m[3]}/${m[2]}/${m[1]}`:String(valor||'');}
 async function eaCarregarAdmin(){if(page!=='admin'||adminTab!=='eventos-avisos'||eaAdminCarregando)return;eaAdminCarregando=true;const box=document.getElementById('ea-lista');try{
   try{empresaConfigAtual=await empresaRequest('/api/empresa/config');}catch(e){console.warn('URL pública indisponível',e);}
@@ -7833,6 +7833,8 @@ function abrirNovaPesquisa(){
           <label>Data de início<input name="inicio_em" type="datetime-local"></label>
           <label>Data de encerramento<input name="encerramento_em" type="datetime-local"></label>
         </div>
+        <label style="display:flex;align-items:center;gap:9px;margin:14px 0;font-weight:600"><input type="checkbox" name="enviar_whatsapp" style="width:auto;flex:none"> Gerar links individuais para WhatsApp</label>
+        <p class="pesq-form-footnote" style="margin-top:-7px">Quando habilitado, o funcionário deverá informar a senha da Intranet. Os links poderão ser gerados após a publicação.</p>
         <div class="pesq-form-actions"><button class="pesq-action" type="submit" id="btnCriarPesquisa">Criar rascunho</button><button class="pesq-action secondary" type="button" onclick="closeModal()">Cancelar</button></div>
         <p class="pesq-form-feedback" id="feedbackNovaPesquisa" role="status"></p>
       </form>
@@ -7857,6 +7859,7 @@ async function criarPesquisaPeloFormulario(event){
         titulo,
         descricao: String(fd.get('descricao') || '').trim() || null,
         anonima: fd.get('anonima') === 'true',
+        enviar_whatsapp: fd.has('enviar_whatsapp'),
         inicio_em: inicio ? new Date(inicio).toISOString() : null,
         encerramento_em: fim ? new Date(fim).toISOString() : null
     };
@@ -8060,6 +8063,8 @@ async function continuarRascunhoPesquisa(id){
         if(identificacao){
             identificacao.value = p.anonima ? 'true' : 'false';
         }
+        const whatsappRascunho = document.getElementById('whatsappRascunhoPesquisa');
+        if(whatsappRascunho) whatsappRascunho.checked = !!p.enviar_whatsapp;
 
         if(statusIdentificacao){
             statusIdentificacao.textContent = p.anonima ? 'Anônima' : 'Identificada';
@@ -8145,6 +8150,12 @@ function abrirEditorPerguntasPesquisa(id, titulo){
         </div>
         <p class="pesq-form-feedback" id="feedbackIdentificacaoPesquisa" role="status"></p>
       </form>
+      <div class="pesq-wizard-divider"></div>
+      <div class="pesq-wizard-step"><b>4</b><span>Distribuição por WhatsApp</span></div>
+      <label style="display:flex;align-items:center;gap:9px;margin:12px 0;font-weight:600"><input id="whatsappRascunhoPesquisa" type="checkbox" style="width:auto;flex:none"> Gerar links individuais para WhatsApp</label>
+      <p class="pesq-form-footnote">A senha da Intranet será obrigatória. Os links serão gerados após publicar.</p>
+      <div class="pesq-form-actions"><button class="pesq-action secondary" type="button" onclick="salvarWhatsappRascunhoPesquisa()">Salvar opção WhatsApp</button></div>
+      <p class="pesq-form-feedback" id="feedbackWhatsappRascunhoPesquisa" role="status"></p>
       <div class="pesq-form-bottom"><button class="pesq-action secondary" type="button" onclick="closeModal();carregarPesquisasAdmin()">Salvar e continuar depois</button><button class="pesq-action" type="button" id="btnPublicarPesquisa" onclick="publicarPesquisaPeloFormulario()">Publicar pesquisa</button></div>
       <p class="pesq-form-footnote">A pesquisa permanece como rascunho até a publicação. É necessário cadastrar ao menos uma pergunta e definir o público.</p>
     </div>`);
@@ -8178,6 +8189,17 @@ async function salvarIdentificacaoPesquisa(event){
     }
 }
 window.salvarIdentificacaoPesquisa = salvarIdentificacaoPesquisa;
+async function salvarWhatsappRascunhoPesquisa(){
+    const feedback = document.getElementById('feedbackWhatsappRascunhoPesquisa');
+    const campo = document.getElementById('whatsappRascunhoPesquisa');
+    if(!pesquisaAdminAtual || !campo) return;
+    try{
+        await requisicaoPesquisas('/api/pesquisas/'+pesquisaAdminAtual+'/whatsapp/config','PUT',{enviar_whatsapp:campo.checked});
+        if(feedback) feedback.textContent='Opção WhatsApp salva.';
+    }catch(erro){if(feedback) feedback.textContent='Erro: '+erro.message;}
+}
+window.salvarWhatsappRascunhoPesquisa = salvarWhatsappRascunhoPesquisa;
+
 function alternativasPerguntaVisibilidade(){
     const tipo = document.getElementById('tipoPerguntaPesquisa')?.value;
     const wrap = document.getElementById('alternativasPerguntaWrap');
@@ -8354,7 +8376,7 @@ async function carregarPesquisasAdmin(){
             const privacidade = p.anonima ? '🔒 Anônima' : 'Identificada';
             const dataFim = p.encerramento_em ? new Date(p.encerramento_em).toLocaleDateString('pt-BR') : '';
             const meta = [status,privacidade,dataFim ? 'Encerra em '+dataFim : 'Sem prazo final'].map(esc).join('');
-            return `<article class="pesq-admin-item" data-status="${esc(status)}"><div><h3>${esc(p.titulo)}</h3><p class="pesq-admin-desc">Pesquisa #${p.id}</p><div class="pesq-admin-meta"><span class="pesq-admin-pill ${classe}">${esc(status)}</span><span class="pesq-admin-pill">${privacidade}</span>${dataFim?`<span class="pesq-admin-pill">Encerra em ${dataFim}</span>`:''}</div></div><div class="pesq-admin-actions">${status==='RASCUNHO'?`<button type="button" onclick="continuarRascunhoPesquisa(${p.id})">Editar / Publicar</button><button type="button" style="color:#b42318;border-color:#efcaca" onclick="excluirPesquisaAdmin(${p.id})">Excluir pesquisa</button>`:`<span class="pesq-admin-pill">${esc(status)}</span>`}</div></article>`;
+            return `<article class="pesq-admin-item" data-status="${esc(status)}"><div><h3>${esc(p.titulo)}</h3><p class="pesq-admin-desc">Pesquisa #${p.id}</p><div class="pesq-admin-meta"><span class="pesq-admin-pill ${classe}">${esc(status)}</span><span class="pesq-admin-pill">${privacidade}</span>${dataFim?`<span class="pesq-admin-pill">Encerra em ${dataFim}</span>`:''}</div></div><div class="pesq-admin-actions">${status==='RASCUNHO'?`<button type="button" onclick="continuarRascunhoPesquisa(${p.id})">Editar / Publicar</button><button type="button" style="color:#b42318;border-color:#efcaca" onclick="excluirPesquisaAdmin(${p.id})">Excluir pesquisa</button>`:`<span class="pesq-admin-pill">${esc(status)}</span>`}<button type="button" onclick="abrirPainelPesquisa(${p.id})">Detalhes / Resultados</button>${(status==='PUBLICADA'||status==='AGENDADA')?`<button type="button" style="color:#b42318;border-color:#efcaca" onclick="encerrarPesquisaAdmin(${p.id})">Encerrar</button>`:''}${p.enviar_whatsapp && (status==='PUBLICADA'||status==='AGENDADA') && !Number(p.links_gerados) ? `<button type="button" onclick="abrirLinksPesquisa(${p.id})">Gerar links WhatsApp</button>` : ''}${p.enviar_whatsapp && Number(p.links_gerados)>0 ? `<button type="button" onclick="abrirLinksPesquisa(${p.id})">Links WhatsApp (${Number(p.links_gerados)})</button>` : ''}</div></article>`;
         }).join('');
         lista.innerHTML = cards || '<div class="pesq-admin-item"><div><h3>Nenhuma pesquisa cadastrada</h3><p class="pesq-admin-desc">Clique em “Nova pesquisa” para começar.</p></div></div>';
         const stats = document.querySelectorAll('.pesq-admin-stat b');
@@ -8370,6 +8392,97 @@ async function carregarPesquisasAdmin(){
     }
 }
 
+
+
+
+// Links individuais de pesquisas: gerenciamento exclusivo do ADMIN.
+let linksPesquisaCache = {};
+function copiarLinkPesquisa(uid){
+  const link=linksPesquisaCache[uid]?.link;
+  if(!link){alert('URL do link indisponível. Configure a URL pública em ADMIN > Empresa.');return;}
+  if(navigator.clipboard && window.isSecureContext){navigator.clipboard.writeText(link).then(()=>alert('Link copiado.')).catch(()=>prompt('Copie o link:',link));}
+  else prompt('Copie o link:',link);
+}
+function compartilharLinkPesquisa(uid){
+  const item=linksPesquisaCache[uid];
+  if(!item?.link){alert('Configure a URL pública antes de compartilhar.');return;}
+  window.open('https://wa.me/?text='+encodeURIComponent(item.mensagem),'_blank','noopener');
+}
+async function gerarLinkIndividualPesquisa(id,uid){
+  try{
+    await requisicaoPesquisas(`/api/pesquisas/${id}/whatsapp/gerar/${uid}`,'POST',{});
+    await abrirLinksPesquisa(id);
+    await carregarPesquisasAdmin();
+  }catch(e){alert('Não foi possível gerar o link: '+e.message);}
+}
+async function abrirLinksPesquisa(id){
+  // Abre imediatamente, inclusive quando ainda não existe nenhum link.
+  modal(`<h2>Links WhatsApp — Pesquisa #${id}</h2><p id="pqWaCarregando">Consultando destinatários...</p><button type="button" class="btn secondary" onclick="closeModal()">Fechar</button>`);
+  try{
+    const info=await requisicaoPesquisas(`/api/pesquisas/${id}/whatsapp`);
+    const cfg=info.config||{};
+    const base=eaWhatsappBase() || (location.protocol==='https:' ? location.origin : '');
+    const pessoas=info.destinatarios||[];
+    linksPesquisaCache={};
+    const linhas=pessoas.map(u=>{
+      const link=u.caminho && base ? base+u.caminho : '';
+      const mensagem=`Olá, ${u.nome}! Você tem uma pesquisa para responder: ${link}`;
+      linksPesquisaCache[u.usuario_id]={link,mensagem};
+      const caminho=u.caminho ? `<div style="font-size:11px;overflow-wrap:anywhere;max-width:380px">${esc(link||u.caminho)}</div>` : '<span class="muted">Ainda não gerado</span>';
+      const situacao=u.respondido?'Respondida':u.caminho?'Gerado':'Pendente';
+      const acoes=u.caminho ? `<button type="button" class="btn secondary" onclick="copiarLinkPesquisa(${u.usuario_id})" ${!link?'disabled':''}>Copiar</button> <button type="button" class="btn secondary" onclick="compartilharLinkPesquisa(${u.usuario_id})" ${!link?'disabled':''}>WhatsApp</button>` : `<button type="button" class="btn secondary" onclick="gerarLinkIndividualPesquisa(${id},${u.usuario_id})" ${!cfg.enviar_whatsapp?'disabled':''}>Gerar</button>`;
+      return `<tr style="border-bottom:1px solid #e1e7ef"><td style="padding:8px">${esc(u.nome)}</td><td style="padding:8px">${situacao}</td><td style="padding:8px">${caminho}</td><td style="padding:8px;white-space:nowrap">${acoes}</td></tr>`;
+    }).join('');
+    const raiz=document.getElementById('modal-root');
+    if(!raiz)return;
+    const aviso=!base?'<p class="notice">Configure a URL pública em ADMIN &gt; Empresa para copiar e compartilhar links completos.</p>':'';
+    modal(`<div style="width:min(1040px,calc(100vw - 90px));max-width:100%"><h2>Links WhatsApp — Pesquisa #${id}</h2><p>Links individuais para os funcionários do público-alvo. O envio é manual.</p>${aviso}<div class="row" style="margin:10px 0"><button class="btn" type="button" onclick="gerarLinksPesquisa(${id})" ${!cfg.enviar_whatsapp?'disabled':''}>Gerar links pendentes</button><button class="btn secondary" type="button" onclick="closeModal()">Fechar</button></div><div style="overflow:auto;max-height:58vh"><table style="width:100%;border-collapse:collapse;font-size:12px"><thead><tr><th style="text-align:left">Funcionário</th><th>Situação</th><th>Link individual</th><th>Ações</th></tr></thead><tbody>${linhas||'<tr><td colspan="4">Nenhum funcionário elegível. Confira o público-alvo da pesquisa.</td></tr>'}</tbody></table></div><p style="font-size:11px">${info.anonima?'Pesquisa anônima: a situação individual das respostas não é exibida.':'Os links são individuais e protegidos por senha.'}</p></div>`);
+    const janela=document.querySelector('#modal-root .modal');if(janela)janela.style.width='min(1100px,96vw)';
+  }catch(e){
+    modal(`<h2>Links WhatsApp — Pesquisa #${id}</h2><p style="color:#b42318">Não foi possível consultar os links: ${esc(e.message)}</p><button type="button" class="btn secondary" onclick="closeModal()">Fechar</button>`);
+  }
+}
+async function gerarLinksPesquisa(id){
+  if(!confirm('Gerar links individuais para os funcionários elegíveis?'))return;
+  try{
+    const r=await requisicaoPesquisas(`/api/pesquisas/${id}/whatsapp/gerar`,'POST',{});
+    await abrirLinksPesquisa(id);
+    await carregarPesquisasAdmin();
+    alert(`${r.gerados} novo(s) link(s) gerado(s).`);
+  }catch(e){alert('Erro ao gerar links: '+e.message);}
+}
+async function encerrarPesquisaAdmin(id){
+  if(!confirm(`Encerrar agora a pesquisa #${id}? As respostas já registradas serão preservadas, mas não será possível responder novamente e os links serão revogados.`))return;
+  try{
+    await requisicaoPesquisas(`/api/pesquisas/${id}/encerrar`,'POST',{});
+    await carregarPesquisasAdmin();
+    alert('Pesquisa encerrada com sucesso.');
+  }catch(e){alert('Não foi possível encerrar a pesquisa: '+e.message);}
+}
+
+async function abrirPainelPesquisa(id){
+    modal(`<div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><h2 style="margin:0">Detalhes da pesquisa #${Number(id)}</h2><button class="btn secondary" onclick="closeModal()">Fechar</button></div><p id="pqPainelLoading">Carregando dados...</p><div id="pqPainelConteudo"></div>`);
+    const caixa=document.getElementById('pqPainelConteudo');
+    try{
+        const d=await requisicaoPesquisas(`/api/pesquisas/${Number(id)}/painel-admin`);
+        if(!caixa)return;
+        const x=v=>esc(String(v??''));
+        const tabs=['Perguntas','Público-alvo','Participação','Resultados'];
+        const prazo=d.pesquisa.encerramento_em?new Date(d.pesquisa.encerramento_em).toLocaleString('pt-BR'):'Sem prazo';
+        const resumo=`<div style="margin:12px 0"><strong>${x(d.pesquisa.titulo)}</strong> · ${x(d.pesquisa.status)} · ${d.pesquisa.anonima?'Anônima':'Identificada'} · Prazo: ${x(prazo)}</div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">${[['Atribuídos',d.indicadores.atribuidos],['Responderam',d.indicadores.respondentes],['Pendentes',d.indicadores.pendentes],['Envios',d.indicadores.envios_registrados]].map(a=>`<span style="padding:8px 12px;border:1px solid #d5e2ef;border-radius:8px"><b>${a[1]}</b> ${a[0]}</span>`).join('')}</div>`;
+        const questoes=d.perguntas.map((q,i)=>`<div style="padding:12px;border-bottom:1px solid #ddd"><b>${i+1}. ${x(q.enunciado)}</b> <small>(${x(q.tipo)}${q.obrigatoria?', obrigatória':''})</small>${q.alternativas.length?`<div>${q.alternativas.map(a=>`<div>• ${x(a.texto)}</div>`).join('')}</div>`:''}</div>`).join('')||'<p>Sem perguntas.</p>';
+        const publico=d.publico.map(a=>`<div>• ${x(a.tipo)}${a.valor?' — '+x(a.valor):''}</div>`).join('')||'<p>Sem público cadastrado.</p>';
+        const pessoas=d.pessoas.map(a=>`<tr><td style="padding:7px;border-bottom:1px solid #eee">${x(a.nome)}</td><td style="padding:7px;border-bottom:1px solid #eee">${x(a.departamento)}</td><td style="padding:7px;border-bottom:1px solid #eee">${a.respondeu?'Respondida':'Pendente'}</td></tr>`).join('');
+        const participacao=d.pesquisa.anonima?'<div style="padding:14px;border:1px solid #d5e2ef;border-radius:8px;background:#f5f8fc"><b>Pesquisa anônima</b><p>Por proteção da privacidade, não são exibidos nomes, departamentos nem a situação individual de participação. O acompanhamento é apresentado somente em totais agregados.</p></div>':`<div style="overflow:auto"><table style="width:100%;border-collapse:collapse"><thead><tr><th>Funcionário</th><th>Departamento</th><th>Participação</th></tr></thead><tbody>${pessoas}</tbody></table></div>${!pessoas?'<p>Nenhum funcionário elegível.</p>':''}`;
+        const resultados=d.perguntas.map((q,i)=>`<div style="padding:12px;border-bottom:1px solid #ddd"><b>${i+1}. ${x(q.enunciado)}</b><p>${q.total_respostas} resposta(s)</p>${Object.entries(q.frequencias).map(([ch,n])=>{const alt=q.alternativas.find(a=>String(a.id)===ch);return `<div>${x(alt?alt.texto:ch)}: <b>${n}</b> (${q.total_respostas?Math.round(100*n/q.total_respostas):0}%)</div>`}).join('')}${q.tipo==='TEXTO'?q.textos.map(t=>`<p style="padding:8px;background:#f3f6fb;border-radius:6px;white-space:pre-wrap">${x(t)}</p>`).join(''):''}</div>`).join('')||'<p>Sem resultados.</p>';
+        caixa.innerHTML=resumo+`<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">${tabs.map((t,i)=>`<button type="button" class="btn secondary" onclick="pqMostrarAba(${i})">${t}</button>`).join('')}</div>`+ [questoes,publico,participacao,resultados].map((c,i)=>`<section class="pqPainelAba" data-aba="${i}" style="display:${i?'none':'block'};max-height:48vh;overflow:auto">${c}</section>`).join('');
+        document.getElementById('pqPainelLoading')?.remove();
+        const dialog=caixa.closest('.modal');if(dialog){dialog.style.width='min(1000px,96vw)';dialog.style.maxWidth='1000px';}
+    }catch(e){const loading=document.getElementById('pqPainelLoading');if(loading)loading.textContent='Erro ao carregar: '+e.message;}
+}
+function pqMostrarAba(i){document.querySelectorAll('.pqPainelAba').forEach(e=>e.style.display=Number(e.dataset.aba)===i?'block':'none');}
+window.abrirPainelPesquisa=abrirPainelPesquisa;
+window.pqMostrarAba=pqMostrarAba;
 
 async function excluirPesquisaAdmin(id){
     const numero = Number(id);
@@ -8393,6 +8506,13 @@ async function excluirPesquisaAdmin(id){
 }
 
 window.excluirPesquisaAdmin = excluirPesquisaAdmin;
+window.abrirLinksPesquisa = abrirLinksPesquisa;
+window.gerarLinksPesquisa = gerarLinksPesquisa;
+window.gerarLinkIndividualPesquisa = gerarLinkIndividualPesquisa;
+window.copiarLinkPesquisa = copiarLinkPesquisa;
+window.compartilharLinkPesquisa = compartilharLinkPesquisa;
+window.encerrarPesquisaAdmin = encerrarPesquisaAdmin;
+
 window.abrirNovaPesquisa=abrirNovaPesquisa;
 window.criarPesquisaPeloFormulario=criarPesquisaPeloFormulario;
 window.adicionarPerguntaPeloFormulario=adicionarPerguntaPeloFormulario;
